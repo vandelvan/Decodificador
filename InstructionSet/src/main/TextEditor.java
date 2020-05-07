@@ -1,6 +1,4 @@
-/*
-Clase del editor de texto
-*/
+
 package main;
 
 import java.io.File;
@@ -23,6 +21,8 @@ public class TextEditor extends javax.swing.JFrame {
     //"Conversor" sera la clase para convertir archivos de binario a decimal y viceversa
     Conversor conversor;
     
+    NumeroLinea numeroLinea;
+    
     public TextEditor(String seleccionado, String datos) {
         initComponents();
         
@@ -33,6 +33,9 @@ public class TextEditor extends javax.swing.JFrame {
         conversor = new Conversor();
         editor.setText(datos);
         leer = new AbrirArchivo();
+        //Numero a las lineas
+        numeroLinea = new NumeroLinea(editor);
+        editorScroll.setRowHeaderView(numeroLinea);
         //"seleccionado" es la ruta del archivo que se estara utilizando
         this.rutaSeleccionada = seleccionado;
         this.seleccionado.setText(seleccionado);
@@ -47,10 +50,10 @@ public class TextEditor extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        editor = new javax.swing.JTextArea();
         seleccionado = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        editorScroll = new javax.swing.JScrollPane();
+        editor = new javax.swing.JTextPane();
         jPanel2 = new javax.swing.JPanel();
         convert = new javax.swing.JToggleButton();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -64,11 +67,9 @@ public class TextEditor extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        editor.setColumns(20);
-        editor.setRows(5);
-        jScrollPane1.setViewportView(editor);
-
         jLabel1.setText("Archivo Seleccionado:");
+
+        editorScroll.setViewportView(editor);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -77,18 +78,18 @@ public class TextEditor extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                    .addComponent(editorScroll)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(seleccionado)))
+                        .addComponent(seleccionado, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
+                .addComponent(editorScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(seleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -299,7 +300,8 @@ public class TextEditor extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem abrir;
     private javax.swing.JToggleButton convert;
-    private javax.swing.JTextArea editor;
+    private javax.swing.JTextPane editor;
+    private javax.swing.JScrollPane editorScroll;
     private javax.swing.JMenuItem guardar;
     private javax.swing.JMenuItem guardarNormal;
     private javax.swing.JLabel jLabel1;
@@ -307,7 +309,6 @@ public class TextEditor extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuItem reset;
     private javax.swing.JTextField seleccionado;
     // End of variables declaration//GEN-END:variables
