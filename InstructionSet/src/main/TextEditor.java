@@ -1,12 +1,12 @@
 
 package main;
 
-import java.io.File;
 import javax.swing.JFileChooser;
 
 public class TextEditor extends javax.swing.JFrame {
     
-    //SelectName es la clase que permite ponerle un nombre al archivo a guardar
+    private static final long serialVersionUID = 1L;
+    // SelectName es la clase que permite ponerle un nombre al archivo a guardar
     SelectName sn;
     //La cadena "rutaSeleccionada" contendra la rura seleccionada del archivo guardado o abierto
     String rutaSeleccionada = "";
@@ -187,7 +187,6 @@ public class TextEditor extends javax.swing.JFrame {
 
     //Metodo para el boton "Guardar como"
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
-        // TODO add your handling code here:
         
         //Si ese boton esta seleccionado significa que el texto esta convertido
         if(convert.isSelected()){
@@ -211,7 +210,7 @@ public class TextEditor extends javax.swing.JFrame {
     
     //Metodo para el boton "Guardar"
     private void guardarNormalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarNormalActionPerformed
-        // TODO add your handling code here:
+
         //Si ese boton esta seleccionado significa que el texto esta convertido
         if(convert.isSelected()){
             //Por lo tanto se debera dejar nornal para guardarlo de forma normal, metodo toBinary (Dejarlo normal)
@@ -228,7 +227,7 @@ public class TextEditor extends javax.swing.JFrame {
     }//GEN-LAST:event_guardarNormalActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
-        // TODO add your handling code here:
+
         reset();
     }//GEN-LAST:event_resetActionPerformed
 
@@ -271,7 +270,7 @@ public class TextEditor extends javax.swing.JFrame {
 
     //Este es un listener del boton
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
-        // TODO add your handling code here:
+        
         //Si el boton esta seleccionado, significa que se a activado el conversor
         if(convert.isSelected()){
             //Se convierten los datos y se sobrescriben en el editor

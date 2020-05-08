@@ -6,7 +6,11 @@ import javax.swing.JFileChooser;
 
 public class SelectName extends javax.swing.JFrame {
 
-    //Nombre del archivo
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    // Nombre del archivo
     String nombre = "";
     //Datos a guardar
     String datos= "";
