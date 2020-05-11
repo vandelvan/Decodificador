@@ -11,19 +11,19 @@ public class SelectName extends javax.swing.JFrame {
      */
     private static final long serialVersionUID = 1L;
     // Nombre del archivo
-    String nombre = "";
+    private String nombre = "";
     //Datos a guardar
-    String datos= "";
+    private String datos= "";
     //Ruta para guardar el archivo
-    String ruta = "";
+    private String ruta = "";
     //Clase para crear la ruta
-    GenerarRuta gr;
+    private GenerarRuta gr;
     //Clase para obtener fecha y hora, si no se le pone nobre se pondra una dependiedo la hora (Lo cambiare a fecha)
-    Calendar calendario;
+    private Calendar calendario;
     //Clase para crear el archivo
-    CrearArchivo ca;
+    private CrearArchivo ca;
     //Clase principal del editor, se cargaran de nuevo la clase con el archivo guardado y seleccionado
-    TextEditor te;
+    private TextEditor te;
 
     public SelectName(String datos) {
         initComponents();
@@ -142,13 +142,22 @@ public class SelectName extends javax.swing.JFrame {
         }
         //Ahora se crea la ruta para guardar el archivo
         gr = new GenerarRuta(nombre, JFileChooser.DIRECTORIES_ONLY);
-        //Se le concatena la extencion del archivo, .txt o .mem
-        ruta = gr.getRutaNom() + listaTipos.getSelectedItem();
-        System.out.println(ruta);
-        //Se crea el archivo, se manda por paramentros los datos y la ruta, a la clase de CrearArchivo
-        ca.crear(datos, ruta);
-        //Metodo para mostrar una nueva ventana del editor, con el archivo que se guardo seleccionado
-        ventanaEditor();
+        
+        //Comprobacion para evitar errores al momento de presionar cancelar en el JFilechoser
+        if(!gr.getRutaArchivo().equals("")){
+             //Se le concatena la extencion del archivo, .txt o .mem
+            ruta = gr.getRutaNom() + listaTipos.getSelectedItem();
+            System.out.println(ruta);
+            //Se crea el archivo, se manda por paramentros los datos y la ruta, a la clase de CrearArchivo
+            ca.crear(datos, ruta);
+            //Metodo para mostrar una nueva ventana del editor, con el archivo que se guardo seleccionado
+            ventanaEditor();
+        }else{
+            //Metodo para mostrar una nueva ventana del editor, con el archivo que se guardo seleccionado
+            ventanaEditor();
+        }
+        
+        
     }//GEN-LAST:event_okActionPerformed
 
     //Si se presiona el boton cancelar
@@ -169,14 +178,6 @@ public class SelectName extends javax.swing.JFrame {
         te.setVisible(true);
     }
     
-    
-    public String getNombre(){
-        return nombre;
-    }
-    
-    public String getRuta(){
-        return ruta;
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelar;

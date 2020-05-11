@@ -12,10 +12,10 @@ import java.util.logging.Logger;
 
 public class CrearArchivo {
     
-    File f;
-    FileWriter fW;
-    PrintWriter pW;
-    BufferedWriter bw;
+    private File f;
+    private FileWriter fW;
+    private PrintWriter pW;
+    private BufferedWriter bw;
     
     public CrearArchivo(){
 

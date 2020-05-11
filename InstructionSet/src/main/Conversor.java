@@ -3,8 +3,8 @@ package main;
 
 public class Conversor {
     
-    String dataAss = "";
-    String dataBi = "";
+    public String dataAss = "";
+    public String dataBi = "";
     
     public Conversor(){
         
