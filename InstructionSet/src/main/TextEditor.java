@@ -45,7 +45,6 @@ public class TextEditor extends javax.swing.JFrame {
      
     }
 
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -277,7 +276,6 @@ public class TextEditor extends javax.swing.JFrame {
     }//GEN-LAST:event_abrirActionPerformed
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_convertActionPerformed
 
     //Se desactivan botones dependiendo de si el archivo es nuevo o se sobrescribe
