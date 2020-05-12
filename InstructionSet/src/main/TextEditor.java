@@ -50,7 +50,6 @@ public class TextEditor extends javax.swing.JFrame {
     private void initComponents() {
 
         jToolBar1 = new javax.swing.JToolBar();
-        convert = new javax.swing.JToggleButton();
         jPanel1 = new javax.swing.JPanel();
         editorScroll = new javax.swing.JScrollPane();
         editor = new javax.swing.JTextPane();
@@ -63,6 +62,9 @@ public class TextEditor extends javax.swing.JFrame {
         guardar = new javax.swing.JMenuItem();
         guardarNormal = new javax.swing.JMenuItem();
         reset = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        convert = new javax.swing.JMenuItem();
+        convertBack = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Decodificador");
@@ -72,18 +74,6 @@ public class TextEditor extends javax.swing.JFrame {
         jToolBar1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jToolBar1.setFloatable(false);
         jToolBar1.setOpaque(false);
-
-        convert.setText("Convertir");
-        convert.setBorderPainted(false);
-        convert.setFocusable(false);
-        convert.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        convert.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        convert.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                convertActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(convert);
 
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -170,6 +160,16 @@ public class TextEditor extends javax.swing.JFrame {
         jMenu1.add(reset);
 
         jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Convertir");
+
+        convert.setText("Ensamblador a Binario");
+        jMenu2.add(convert);
+
+        convertBack.setText("Binario a Ensamblador");
+        jMenu2.add(convertBack);
+
+        jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
 
@@ -276,10 +276,6 @@ public class TextEditor extends javax.swing.JFrame {
         
     }//GEN-LAST:event_abrirActionPerformed
 
-    private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_convertActionPerformed
-
     //Se desactivan botones dependiendo de si el archivo es nuevo o se sobrescribe
     public void comprobarSeleccionado(){
         
@@ -294,13 +290,15 @@ public class TextEditor extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem abrir;
-    private javax.swing.JToggleButton convert;
+    private javax.swing.JMenuItem convert;
+    private javax.swing.JMenuItem convertBack;
     private javax.swing.JTextPane editor;
     private javax.swing.JScrollPane editorScroll;
     private javax.swing.JMenuItem guardar;
     private javax.swing.JMenuItem guardarNormal;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
