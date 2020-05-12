@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 
 public class AbrirArchivo {
     
-    String rutaArch = "";
-    String datos = "";
+    private String rutaArch = "";
+    public String datos = "";
     
     public AbrirArchivo(){
         
@@ -26,8 +26,12 @@ public class AbrirArchivo {
                 //Se va concatenando el texto que se lee
                 datos = datos + lectura.nextLine();
                 //Cada pasada es una linea leida, por lo tanto le concateno un salto de linea para no perder el formato
-                datos = datos + "\n";
-                //System.out.println("-->" + datos);
+                //Cuando sea false la lectura ya no pondra un salto de linea, estaria de mas al original
+                if(lectura.hasNextLine() != false){
+                    datos = datos + "\n";
+                    //System.out.println(lectura.hasNextLine());
+                }
+
             }
             lectura.close();
         } catch (FileNotFoundException ex) {

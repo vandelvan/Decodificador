@@ -7,21 +7,21 @@ public class TextEditor extends javax.swing.JFrame {
     
     private static final long serialVersionUID = 1L;
     // SelectName es la clase que permite ponerle un nombre al archivo a guardar
-    SelectName sn;
+    private SelectName sn;
     //La cadena "rutaSeleccionada" contendra la rura seleccionada del archivo guardado o abierto
-    String rutaSeleccionada = "";
+    private String rutaSeleccionada = "";
     //"CrearArchivo" es la clase que crea o sobrescribe un archivo
-    CrearArchivo controlArchivo;
+    private CrearArchivo controlArchivo;
     //"GenerarRuta" es la clase que ayuda a crear la ruta en la que se guardara el archivo
-    GenerarRuta gr;
+    private GenerarRuta gr;
     //"AbrirArchivo" es las clase que permite abrir un archivo y leerlo para cargarlo en el editor
-    AbrirArchivo leer;
+    private AbrirArchivo leer;
     //La cadena "datos" contendra los datos que se ecribiran en el editor de texto
-    String datos = "";
+    private String datos = "";
     //"Conversor" sera la clase para convertir archivos de binario a decimal y viceversa
-    Conversor conversor;
+    private Conversor conversor;
     
-    NumeroLinea numeroLinea;
+    private NumeroLinea numeroLinea;
     
     public TextEditor(String seleccionado, String datos) {
         initComponents();
@@ -45,7 +45,6 @@ public class TextEditor extends javax.swing.JFrame {
      
     }
 
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -255,8 +254,6 @@ public class TextEditor extends javax.swing.JFrame {
         
         //Se utiliza la clase para crear la ruta en donde se abrira el archivo
         gr = new GenerarRuta(null, JFileChooser.FILES_ONLY);
-        //Reset de todo
-        reset();
         
         //Comprobar si la ruta no esta vacia
         if(!gr.getRutaArchivo().equals("")){
@@ -275,6 +272,9 @@ public class TextEditor extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_abrirActionPerformed
+
+    private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
+    }//GEN-LAST:event_convertActionPerformed
 
     //Se desactivan botones dependiendo de si el archivo es nuevo o se sobrescribe
     public void comprobarSeleccionado(){
