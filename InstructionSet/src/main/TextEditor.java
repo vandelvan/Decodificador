@@ -164,9 +164,19 @@ public class TextEditor extends javax.swing.JFrame {
 
         convert.setText("Ensamblador a Binario");
         jMenu2.add(convert);
+        convert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                conversor.toBinary(editor.getText());
+            }
+        });
 
         convertBack.setText("Binario a Ensamblador");
         jMenu2.add(convertBack);
+        convertBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                conversor.toAssembly(editor.getText());
+            }
+        });
 
         jMenuBar1.add(jMenu2);
 
@@ -194,43 +204,18 @@ public class TextEditor extends javax.swing.JFrame {
 
     //Metodo para el boton "Guardar como"
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
-        
-        //Si ese boton esta seleccionado significa que el texto esta convertido
-        if(convert.isSelected()){
-            //Por lo tanto se debera dejar nornal para guardarlo de forma normal, metodo toBinary (Dejarlo normal)
-            conversor.toBinary(editor.getText());//Metodo no terminado
-            //Se muestra la ventana para seleccionar el nombre del archivo y se le pasa por parametros los datos
-            sn = new SelectName(conversor.getDataBi());
-            //Configuracion de la ventana
-            sn.setLocationRelativeTo(null);
-            sn.setVisible(true);
-            dispose();
-        }else{//Si el boton no esta seleccionado significa que el texto esta nornal
             //Se muestra la ventana para seleccionar el nombre del archivo y se le pasa por parametros los datos
             sn = new SelectName(editor.getText());
             sn.setLocationRelativeTo(null);
             sn.setVisible(true);
-            dispose();
-        }
-    
+            dispose();    
     }//GEN-LAST:event_guardarActionPerformed
     
     //Metodo para el boton "Guardar"
     private void guardarNormalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarNormalActionPerformed
-
-        //Si ese boton esta seleccionado significa que el texto esta convertido
-        if(convert.isSelected()){
-            //Por lo tanto se debera dejar nornal para guardarlo de forma normal, metodo toBinary (Dejarlo normal)
-            conversor.toBinary(editor.getText());//Metodo no terminado
-            //Se le pasa por parametros los datos y la ruta que ya estaria definida, ahi se realiza el guardado de cambios
-            controlArchivo.crear(conversor.getDataBi(), rutaSeleccionada);
-            System.out.println("archivo guardado"); 
-        }else{
             //Se le pasa por parametros los datos normales y la ruta para guardarlos en el mismo archivo
             controlArchivo.crear(editor.getText(), rutaSeleccionada);
-            System.out.println("archivo guardado");
-        }
-      
+            System.out.println("archivo guardado");      
     }//GEN-LAST:event_guardarNormalActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
