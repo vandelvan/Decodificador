@@ -9,3 +9,8 @@ InstructionSet/nbproject/build-impl.xml
 InstructionSet/nbproject/private/private.xml
 InstructionSet/nbproject/private/private.properties
 InstructionSet/nbproject/build-impl.xml
+InstructionSet/nbproject/private/private.properties
+*.class
+InstructionSet/nbproject/private/private.properties
+InstructionSet/nbproject/private/private.xml
+*.class
