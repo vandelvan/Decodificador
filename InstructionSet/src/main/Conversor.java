@@ -20,8 +20,21 @@ public class Conversor {
         //Covertir el texto que estara en ensamblador a binario, si hay palabras reservadas
         String[] lineas = datos.split("\n");
         lineas = this.deleteComentarios(lineas);    //eliminamos los comentarios
-        for (String string : lineas) {
-            System.out.println(string);
+        //Obtenemos opCode y Function de cada instruccion
+        Instrucciones instruccion = new Instrucciones();
+        for (String linea : lineas) {
+            System.out.println(linea);
+            String inst = linea.split(" ")[0];
+            System.out.println(inst);
+            String[] opFunc = instruccion.opcodeFunction(inst);
+            //Si no es una funcion valida
+            if(opFunc[0] == "" && opFunc[1] == "")
+                return;
+            String opCode = opFunc[1];
+            String function = opFunc[0];
+            System.out.println(opCode);
+            System.out.println(function);
+            System.out.println("- - - - - - - - - - -");
         }
         
         this.dataBin = datos;

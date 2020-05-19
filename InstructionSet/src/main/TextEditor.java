@@ -241,9 +241,19 @@ public class TextEditor extends javax.swing.JFrame {
 
         convert.setText("Ensamblador a Binario");
         jMenu2.add(convert);
+        convert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                conversor.toBinary(editor.getText());
+            }
+        });
 
         convertBack.setText("Binario a Ensamblador");
-        jMenu2.add(convertBack);
+        jMenu2.add(convertBack); 
+        convertBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                conversor.toAssembly(editor.getText());
+            }
+        });
 
         jMenuBar1.add(jMenu2);
 
