@@ -3,6 +3,7 @@ package main;
 
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -243,7 +244,14 @@ public class TextEditor extends javax.swing.JFrame {
         jMenu2.add(convert);
         convert.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                conversor.toBinary(editor.getText());
+                boolean status = conversor.toBinary(editor.getText());
+                if(!status){    //Si hubo algun error lo notifica
+                    JOptionPane.showMessageDialog(
+                        jMenu2,
+                        "Tiene un error en su codigo",
+                        "ERROR.",
+                        JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
