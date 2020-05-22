@@ -10,6 +10,9 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.util.Hashtable;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.JViewport;
 
 public class TextEditor extends javax.swing.JFrame {
     
@@ -38,8 +41,13 @@ public class TextEditor extends javax.swing.JFrame {
     private File archivo = null;
     private String[] archivosCarpeta;
     
+    String nomArchivo = "";
+    ButtonTabComponent buttonTabComponent;
     
     private NumeroLinea numeroLinea;
+    JTextPane areaAux;
+    JScrollPane scrollAux;
+    JViewport viewAux;
     
     public TextEditor(String seleccionado, String datos) {
         initComponents();
@@ -72,15 +80,16 @@ public class TextEditor extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         carpetaBTN = new javax.swing.JToggleButton();
         jPanel1 = new javax.swing.JPanel();
-        editorScroll = new javax.swing.JScrollPane();
-        editor = new javax.swing.JTextPane();
+        panelCarpeta = new javax.swing.JPanel();
+        btnAbrirCarpeta = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        arbolCarpeta = new javax.swing.JTree();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         seleccionado = new javax.swing.JTextField();
-        panelCarpeta = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        arbolCarpeta = new javax.swing.JTree();
-        btnAbrirCarpeta = new javax.swing.JButton();
+        pestanas = new javax.swing.JTabbedPane();
+        editorScroll = new javax.swing.JScrollPane();
+        editor = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         abrir = new javax.swing.JMenuItem();
@@ -113,7 +122,39 @@ public class TextEditor extends javax.swing.JFrame {
 
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        editorScroll.setViewportView(editor);
+        panelCarpeta.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        btnAbrirCarpeta.setText("Abrir Carpeta");
+        btnAbrirCarpeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAbrirCarpetaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Vacio");
+        arbolCarpeta.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        jScrollPane2.setViewportView(arbolCarpeta);
+
+        javax.swing.GroupLayout panelCarpetaLayout = new javax.swing.GroupLayout(panelCarpeta);
+        panelCarpeta.setLayout(panelCarpetaLayout);
+        panelCarpetaLayout.setHorizontalGroup(
+            panelCarpetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCarpetaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelCarpetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnAbrirCarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
+                .addContainerGap())
+        );
+        panelCarpetaLayout.setVerticalGroup(
+            panelCarpetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCarpetaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnAbrirCarpeta)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -126,8 +167,8 @@ public class TextEditor extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(seleccionado, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(seleccionado)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -136,43 +177,19 @@ public class TextEditor extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(seleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(seleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        panelCarpeta.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        pestanas.setToolTipText("");
+        pestanas.setName(""); // NOI18N
 
-        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Vacio");
-        arbolCarpeta.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        jScrollPane2.setViewportView(arbolCarpeta);
+        editor.setToolTipText("");
+        editor.setName(""); // NOI18N
+        editorScroll.setViewportView(editor);
+        editor.getAccessibleContext().setAccessibleName("Archivo");
 
-        btnAbrirCarpeta.setText("Abrir Carpeta");
-        btnAbrirCarpeta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAbrirCarpetaActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout panelCarpetaLayout = new javax.swing.GroupLayout(panelCarpeta);
-        panelCarpeta.setLayout(panelCarpetaLayout);
-        panelCarpetaLayout.setHorizontalGroup(
-            panelCarpetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelCarpetaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelCarpetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
-                    .addComponent(btnAbrirCarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        panelCarpetaLayout.setVerticalGroup(
-            panelCarpetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCarpetaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnAbrirCarpeta)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        pestanas.addTab("tab1", editorScroll);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -185,7 +202,7 @@ public class TextEditor extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(panelCarpeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editorScroll)))
+                        .addComponent(pestanas)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -193,11 +210,15 @@ public class TextEditor extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(editorScroll)
+                    .addComponent(pestanas)
                     .addComponent(panelCarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
+
+        pestanas.getAccessibleContext().setAccessibleName("Archivo");
+        pestanas.getAccessibleContext().setAccessibleDescription("");
 
         jMenuBar1.setBackground(new java.awt.Color(255, 255, 255));
         jMenuBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -242,26 +263,9 @@ public class TextEditor extends javax.swing.JFrame {
 
         convert.setText("Ensamblador a Binario");
         jMenu2.add(convert);
-        convert.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                boolean status = conversor.toBinary(editor.getText());
-                if(!status){    //Si hubo algun error lo notifica
-                    JOptionPane.showMessageDialog(
-                        jMenu2,
-                        "Tiene un error en su codigo",
-                        "ERROR.",
-                        JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
 
         convertBack.setText("Binario a Ensamblador");
-        jMenu2.add(convertBack); 
-        convertBack.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                conversor.toAssembly(editor.getText());
-            }
-        });
+        jMenu2.add(convertBack);
 
         jMenuBar1.add(jMenu2);
 
@@ -271,8 +275,8 @@ public class TextEditor extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -317,6 +321,7 @@ public class TextEditor extends javax.swing.JFrame {
         convert.setSelected(false);
         rutaSeleccionada = "";
         datos = "";
+        pestanas.removeAll();
     }
     
     //Metodo para el boton "Abrir"
@@ -324,6 +329,8 @@ public class TextEditor extends javax.swing.JFrame {
         
         //Se utiliza la clase para crear la ruta en donde se abrira el archivo
         gr = new GenerarRuta(null, JFileChooser.FILES_ONLY);
+        gr.separarNomRuta();
+        nomArchivo = gr.getNomSinRuta();
         
         abrirArchivo(gr.getRutaArchivo());
         
@@ -340,15 +347,40 @@ public class TextEditor extends javax.swing.JFrame {
             
             //Se utiliza el objeto de la clase "AbrirArchivo", se utiliza su metodo "leer" y se le manda la ruta del archivo
             leer.leer(ruta);
+            
+            //Pestañas
+            buttonTabComponent = new ButtonTabComponent(pestanas);
+            //Objetos para crear las nuevas pestañas con los numeros de lineas
+            JTextPane editorNuevo = new JTextPane();
+            JScrollPane scrollNuevo = new JScrollPane();
+            NumeroLinea numLinea = new NumeroLinea(editorNuevo);
+            scrollNuevo.setViewportView(editorNuevo);
+            scrollNuevo.setRowHeaderView(numLinea);
+            
+            //Añado la pestaña con su nombre y panel de texto ya modificado
+            pestanas.add(nomArchivo, scrollNuevo);
+            //Le paso el objeto que permite cerrar las pestañas
+            pestanas.setTabComponentAt(pestanas.getTabCount()-1, buttonTabComponent);
+            //Selecciono la ultima pestaña seleccionada
+            pestanas.setSelectedIndex(pestanas.getTabCount()-1);
+     
+            //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
+            scrollAux = (JScrollPane)pestanas.getSelectedComponent();
+            //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
+            viewAux = scrollAux.getViewport();
+            
             //Se establece el editor con los datos obtenidos de la lectura
-            editor.setText(leer.getData());
+            //Dentro del viewport esta el textpane, lo guardo en un objeto
+            areaAux = (JTextPane)viewAux.getView();
+            //establezco el texto en el objeto obtenido que pertenece al TextPane
+            areaAux.setText(leer.getData());
+            
             //Se guarda la ruta en la cadena, (Era para evitar un error que no recuerdo exactamente cual era :b)
             rutaSeleccionada = ruta;
             leer.datos = "";
         }
         
     }
-    
     
     
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
@@ -360,7 +392,7 @@ public class TextEditor extends javax.swing.JFrame {
 
     private void btnAbrirCarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirCarpetaActionPerformed
         rutaCarpeta=new GenerarRuta(null, JFileChooser.DIRECTORIES_ONLY);
-        
+
         if(!rutaCarpeta.getRutaArchivo().equals("")){
             datosRutas.clear();
             //Metodo que separa la ruta y el nombre del archivo
@@ -373,33 +405,31 @@ public class TextEditor extends javax.swing.JFrame {
             carpeta = new File(rutaCarpeta.getRutaArchivo());
             //Guardo la lista de los archivos en un arreglo de cadenas
             archivosCarpeta = carpeta.list();
-            
+
             //Compruebo que el arreglo no este vacio
             if(!archivosCarpeta.equals(null)){
                 //Recorro la lista de los archivos
                 for(int i = 0; i < archivosCarpeta.length; i++){
                     //Creo un objeto file para comprobar si lo de la ruta es un archivo
                     archivo = new File(rutaCarpeta.getRutaArchivo() + "\\" + archivosCarpeta[i]);
-                    //Compruebo si lo de la ruta es un archivo, y si es txt, mem, asm
-                    if(archivo.isFile() && isTetx(archivo.getName())){
-                        System.out.println(archivosCarpeta[i]);
-                        //Creacion de objeto para insertar en el nodo raiz los archivos en la ruta
-                        DefaultMutableTreeNode archivo = new DefaultMutableTreeNode(archivosCarpeta[i]);
-                        carpetaNodo.add(archivo);
-                        //Agrego los archivos al Hash table
-                        datosRutas.put(archivosCarpeta[i], rutaCarpeta.getRutaArchivo() + "\\" + archivosCarpeta[i]);
+                        //Compruebo si lo de la ruta es un archivo, y si es txt, mem, asm
+                        if(archivo.isFile() && isTetx(archivo.getName())){
+                            System.out.println(archivosCarpeta[i]);
+                            //Creacion de objeto para insertar en el nodo raiz los archivos en la ruta
+                            DefaultMutableTreeNode archivo = new DefaultMutableTreeNode(archivosCarpeta[i]);
+                            carpetaNodo.add(archivo);
+                            //Agrego los archivos al Hash table
+                            datosRutas.put(archivosCarpeta[i], rutaCarpeta.getRutaArchivo() + "\\" + archivosCarpeta[i]);
+                            }
+
+                        }
                     }
-                    
+
+                    //Modelo para el arbol y establezco la raiz
+                    DefaultTreeModel modelo = new DefaultTreeModel(carpetaNodo);
+                    arbolCarpeta.setModel(modelo);
+
                 }
-            }
-            
-            //Modelo para el arbol y establezco la raiz
-            DefaultTreeModel modelo = new DefaultTreeModel(carpetaNodo);
-            arbolCarpeta.setModel(modelo);
-           
-        }else{
-            
-        }  
     }//GEN-LAST:event_btnAbrirCarpetaActionPerformed
 
     //Funcion para comprobar la extencion de un archivo
@@ -440,6 +470,7 @@ public class TextEditor extends javax.swing.JFrame {
                 
                 if(datosRutas.get(nodo.getUserObject()) != null){
                     System.out.println(datosRutas.get(nodo.getUserObject()));
+                    nomArchivo = (String) nodo.getUserObject();
                     abrirArchivo(datosRutas.get(nodo.getUserObject()));
                 }
                 
@@ -490,6 +521,7 @@ public class TextEditor extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel panelCarpeta;
+    private javax.swing.JTabbedPane pestanas;
     private javax.swing.JMenuItem reset;
     private javax.swing.JTextField seleccionado;
     // End of variables declaration//GEN-END:variables
