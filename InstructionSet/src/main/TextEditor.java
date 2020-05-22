@@ -92,6 +92,7 @@ public class TextEditor extends javax.swing.JFrame {
         editor = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        nuevo = new javax.swing.JMenuItem();
         abrir = new javax.swing.JMenuItem();
         guardar = new javax.swing.JMenuItem();
         guardarNormal = new javax.swing.JMenuItem();
@@ -218,12 +219,19 @@ public class TextEditor extends javax.swing.JFrame {
         );
 
         pestanas.getAccessibleContext().setAccessibleName("Archivo");
-        pestanas.getAccessibleContext().setAccessibleDescription("");
 
         jMenuBar1.setBackground(new java.awt.Color(255, 255, 255));
         jMenuBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         jMenu1.setText("Archivo");
+
+        nuevo.setText("Nuevo");
+        nuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuevoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(nuevo);
 
         abrir.setText("Abrir");
         abrir.addActionListener(new java.awt.event.ActionListener() {
@@ -262,9 +270,19 @@ public class TextEditor extends javax.swing.JFrame {
         jMenu2.setText("Convertir");
 
         convert.setText("Ensamblador a Binario");
+        convert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                convertActionPerformed(evt);
+            }
+        });
         jMenu2.add(convert);
 
         convertBack.setText("Binario a Ensamblador");
+        convertBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                convertBackActionPerformed(evt);
+            }
+        });
         jMenu2.add(convertBack);
 
         jMenuBar1.add(jMenu2);
@@ -348,30 +366,9 @@ public class TextEditor extends javax.swing.JFrame {
             //Se utiliza el objeto de la clase "AbrirArchivo", se utiliza su metodo "leer" y se le manda la ruta del archivo
             leer.leer(ruta);
             
-            //Pestañas
-            buttonTabComponent = new ButtonTabComponent(pestanas);
-            //Objetos para crear las nuevas pestañas con los numeros de lineas
-            JTextPane editorNuevo = new JTextPane();
-            JScrollPane scrollNuevo = new JScrollPane();
-            NumeroLinea numLinea = new NumeroLinea(editorNuevo);
-            scrollNuevo.setViewportView(editorNuevo);
-            scrollNuevo.setRowHeaderView(numLinea);
+            //Pestaña
+            generarPestana();
             
-            //Añado la pestaña con su nombre y panel de texto ya modificado
-            pestanas.add(nomArchivo, scrollNuevo);
-            //Le paso el objeto que permite cerrar las pestañas
-            pestanas.setTabComponentAt(pestanas.getTabCount()-1, buttonTabComponent);
-            //Selecciono la ultima pestaña seleccionada
-            pestanas.setSelectedIndex(pestanas.getTabCount()-1);
-     
-            //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
-            scrollAux = (JScrollPane)pestanas.getSelectedComponent();
-            //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
-            viewAux = scrollAux.getViewport();
-            
-            //Se establece el editor con los datos obtenidos de la lectura
-            //Dentro del viewport esta el textpane, lo guardo en un objeto
-            areaAux = (JTextPane)viewAux.getView();
             //establezco el texto en el objeto obtenido que pertenece al TextPane
             areaAux.setText(leer.getData());
             
@@ -432,6 +429,45 @@ public class TextEditor extends javax.swing.JFrame {
                 }
     }//GEN-LAST:event_btnAbrirCarpetaActionPerformed
 
+    //Abrir pestaña nueva
+    private void nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoActionPerformed
+        
+            generarPestana();
+    }//GEN-LAST:event_nuevoActionPerformed
+
+    private void convertBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertBackActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_convertBackActionPerformed
+
+    
+    private void generarPestana(){
+        
+            //Pestañas
+            buttonTabComponent = new ButtonTabComponent(pestanas);
+            //Objetos para crear las nuevas pestañas con los numeros de lineas
+            JTextPane editorNuevo = new JTextPane();
+            JScrollPane scrollNuevo = new JScrollPane();
+            NumeroLinea numLinea = new NumeroLinea(editorNuevo);
+            scrollNuevo.setViewportView(editorNuevo);
+            scrollNuevo.setRowHeaderView(numLinea);
+            
+            //Añado la pestaña con su nombre y panel de texto ya modificado
+            pestanas.add("Archivo", scrollNuevo);
+            //Le paso el objeto que permite cerrar las pestañas
+            pestanas.setTabComponentAt(pestanas.getTabCount()-1, buttonTabComponent);
+            //Selecciono la ultima pestaña seleccionada
+            pestanas.setSelectedIndex(pestanas.getTabCount()-1);
+     
+            //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
+            scrollAux = (JScrollPane)pestanas.getSelectedComponent();
+            //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
+            viewAux = scrollAux.getViewport();
+            
+            //Se establece el editor con los datos obtenidos de la lectura
+            //Dentro del viewport esta el textpane, lo guardo en un objeto
+            areaAux = (JTextPane)viewAux.getView();
+    }
+    
     //Funcion para comprobar la extencion de un archivo
     private boolean isTetx(String archivo){
         int indicador = 0;
@@ -520,6 +556,7 @@ public class TextEditor extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JMenuItem nuevo;
     private javax.swing.JPanel panelCarpeta;
     private javax.swing.JTabbedPane pestanas;
     private javax.swing.JMenuItem reset;
