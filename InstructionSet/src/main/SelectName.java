@@ -3,6 +3,7 @@ package main;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Hashtable;
 import javax.swing.JFileChooser;
 import javax.swing.JTabbedPane;
 
@@ -30,11 +31,22 @@ public class SelectName extends javax.swing.JFrame {
     
     ArrayList<Component> componentes;
     ArrayList<String> nombs;
+    int indexSeleccionado;
+    String nomSeleccionado;
+    Hashtable<String, String> rutasPestanas;
 
-    public SelectName(String datos, ArrayList<Component> componentes,  ArrayList<String> nombs) {
+    public SelectName(  String datos, 
+                        ArrayList<Component> componentes,  
+                        ArrayList<String> nombs, 
+                        int indexSeleccionado, 
+                        String nomSeleccionado, 
+                        Hashtable<String, String> rutasPestanas) {
         initComponents();
         this.componentes = componentes;
         this.nombs = nombs;
+        this.indexSeleccionado = indexSeleccionado;
+        this.nomSeleccionado = nomSeleccionado;
+        this.rutasPestanas = rutasPestanas;
         calendario = Calendar.getInstance();
         ca = new CrearArchivo();
         //Se reciben los datos, es una forma se mantenerlos al mometo de cambiar de ventana, asi no se pierden
@@ -150,6 +162,7 @@ public class SelectName extends javax.swing.JFrame {
         }
         //Ahora se crea la ruta para guardar el archivo
         gr = new GenerarRuta(nombre, JFileChooser.DIRECTORIES_ONLY);
+        nomSeleccionado = nombre + listaTipos.getSelectedItem();
         
         //Comprobacion para evitar errores al momento de presionar cancelar en el JFilechoser
         if(!gr.getRutaArchivo().equals("")){
@@ -159,6 +172,9 @@ public class SelectName extends javax.swing.JFrame {
             //Se crea el archivo, se manda por paramentros los datos y la ruta, a la clase de CrearArchivo
             ca.crear(datos, ruta);
             //Metodo para mostrar una nueva ventana del editor, con el archivo que se guardo seleccionado
+
+            rutasPestanas.put(nomSeleccionado, ruta);
+            rutasPestanas.put("Archivo", "No Guardado");
             ventanaEditor();
         }else{
             //Metodo para mostrar una nueva ventana del editor, con el archivo que se guardo seleccionado
@@ -181,7 +197,7 @@ public class SelectName extends javax.swing.JFrame {
     public void ventanaEditor(){
         dispose();
         //Se define el objeto y se le mada la ruta y los datos guardados
-        te = new TextEditor(ruta, datos, componentes, nombs);
+        te = new TextEditor(ruta, datos, componentes, nombs, indexSeleccionado, nomSeleccionado, rutasPestanas);
         te.setLocationRelativeTo(null);
         te.setVisible(true);
     }

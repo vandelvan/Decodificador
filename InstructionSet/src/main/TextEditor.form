@@ -280,7 +280,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="seleccionado" max="32767" attributes="0"/>
+                      <Component id="selectField" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -291,7 +291,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="seleccionado" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="selectField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -304,7 +304,7 @@
                 <Property name="text" type="java.lang.String" value="Archivo Seleccionado:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="seleccionado">
+            <Component class="javax.swing.JTextField" name="selectField">
             </Component>
           </SubComponents>
         </Container>

@@ -1,4 +1,4 @@
-
+//Prueba xd
 package main;
 
 import java.awt.Component;
@@ -36,18 +36,22 @@ public class TextEditor extends javax.swing.JFrame {
     private Conversor conversor;
     //Otro objeto de la clase "GenerarRuta", para modificar la zona de seleccion de carpeta
     private GenerarRuta rutaCarpeta;
-    
+    //Hash Table que guarda los nombres y rutas de archivos de la carpeta de trabajo
     private Hashtable<String, String> datosRutas = new Hashtable<>();
-    
+    //Variables para el funcionamiento de la carpeta de trabajo
     private String propiedadCarpeta = "";
     private File carpeta = null;
     private File archivo = null;
     private String[] archivosCarpeta;
-    
+    //Nombre del archivo que se abre para colocarlo en la pestaña
     String nomArchivo = "";
-    ButtonTabComponent buttonTabComponent;
     
+    //Componente para crear pestañas, (Obtenido de la pagina de Oracle)
+    ButtonTabComponent buttonTabComponent;
+    //Clase para generar lineas en el espacio de texto
     private NumeroLinea numeroLinea;
+    
+    //Objetos auxiliares que sirven para añiadir pestañas de forma dinamica
     JTextPane areaAux;
     JScrollPane scrollAux;
     JViewport viewAux;
@@ -55,8 +59,19 @@ public class TextEditor extends javax.swing.JFrame {
     //Arreglos para guardar los componentes de las pestañas y sus nombres de pestaña
     ArrayList<String> nombs = new ArrayList<String>();
     ArrayList<Component> componentes = new ArrayList<Component>();
+    //Variable que guarda el indice de la pestaña que se guardara
+    int indexSeleccionado = 0;
+    //variable que guarda el nombre de la pestaña seleccionada cuando se clickea en Guardar como
+    String nomSeleccionado = "";
     
-    public TextEditor(String seleccionado, String datos, ArrayList<Component> componentes,  ArrayList<String> nombs) {
+    Hashtable<String, String> rutasPestanas = new Hashtable<>();
+    
+    public TextEditor(  String seleccionado, 
+                        String datos, ArrayList<Component> componentes,  
+                        ArrayList<String> nombs, 
+                        int indexSeleccionado, 
+                        String nomSeleccionado, 
+                        Hashtable<String, String> rutasPestanas) {
         initComponents();
         
         //Se establecen los datos que se escribiran en el editor
@@ -68,13 +83,17 @@ public class TextEditor extends javax.swing.JFrame {
         
         this.componentes = componentes;
         this.nombs = nombs;
+        this.indexSeleccionado = indexSeleccionado;
+        this.rutaSeleccionada = seleccionado;
+        this.nomSeleccionado = nomSeleccionado;
+        this.rutasPestanas = rutasPestanas;
         //Funcion para establecer los componentes en el TabbedPane
         setComponents();
         
         //"seleccionado" es la ruta del archivo que se estara utilizando
-        this.rutaSeleccionada = seleccionado;
-        this.seleccionado.setText(seleccionado);
-        this.seleccionado.setEditable(false);
+        
+        this.selectField.setText(seleccionado);
+        this.selectField.setEditable(false);
         //Este metodo comprueba el campo seleccionado, y de ahi activa y desactiva botones
         comprobarSeleccionado();
         carpetaBtnEstado();
@@ -88,6 +107,12 @@ public class TextEditor extends javax.swing.JFrame {
         if(componentes != null){
            for(int i = 0; i < componentes.size(); i++){  
                pestanas.add(nombs.get(i), componentes.get(i));
+               
+               if(indexSeleccionado == i){
+                   pestanas.setTitleAt(i, nomSeleccionado);
+                   pestanas.setSelectedIndex(i);
+               }
+               
                //Agrego los botones x para cerrar pestañas
                buttonTabComponent = new ButtonTabComponent(pestanas);
                pestanas.setTabComponentAt(pestanas.getTabCount()-1, buttonTabComponent);
@@ -116,7 +141,7 @@ public class TextEditor extends javax.swing.JFrame {
         arbolCarpeta = new javax.swing.JTree();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        seleccionado = new javax.swing.JTextField();
+        selectField = new javax.swing.JTextField();
         pestanas = new javax.swing.JTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -197,7 +222,7 @@ public class TextEditor extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(seleccionado)
+                .addComponent(selectField)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -206,7 +231,7 @@ public class TextEditor extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(seleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(selectField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -337,7 +362,17 @@ public class TextEditor extends javax.swing.JFrame {
 
     //Metodo para el boton "Guardar como"
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
-            guardarComo(areaAux.getText());
+        /*Obtengo el panel seleccionado para evitar NullExeption*/
+        //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
+        scrollAux = (JScrollPane)pestanas.getSelectedComponent();
+        //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
+        viewAux = scrollAux.getViewport();
+            
+       //Se establece el editor con los datos obtenidos de la lectura
+        //Dentro del viewport esta el textpane, lo guardo en un objeto
+        areaAux = (JTextPane)viewAux.getView();
+        
+        guardarComo(areaAux.getText());
     }//GEN-LAST:event_guardarActionPerformed
     
     //Metodo para el boton "Guardar"
@@ -354,13 +389,19 @@ public class TextEditor extends javax.swing.JFrame {
 
     //Metodo para resetear todo
     public void reset(){
-        seleccionado.setText("");
+        selectField.setText("");
         guardar.setEnabled(true);
         guardarNormal.setEnabled(false);
         convert.setSelected(false);
         rutaSeleccionada = "";
         datos = "";
         pestanas.removeAll();
+        rutasPestanas.clear();
+        rutasPestanas.put("Archivo", "No Guardado");
+        datosRutas.clear();
+        arbolCarpeta.setModel(null);
+        nombs.clear();
+        componentes.clear();
     }
     
     //Metodo para el boton "Abrir"
@@ -379,8 +420,9 @@ public class TextEditor extends javax.swing.JFrame {
         
         //Comprobar si la ruta no esta vacia
         if(!ruta.equals("")){
+            rutasPestanas.put(nomArchivo, ruta);
             //Se escribe la ruta en el campo "seleccionado"
-            seleccionado.setText(ruta);
+            selectField.setText(ruta);
             //Se llama al metodo para desactivar ciertos botones
             comprobarSeleccionado();
             
@@ -452,7 +494,9 @@ public class TextEditor extends javax.swing.JFrame {
 
     //Abrir pestaña nueva
     private void nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoActionPerformed
-
+            guardarNormal.setEnabled(false);
+            selectField.setText("No Guardado");
+            rutaSeleccionada = "No Guardado";
             generarPestana("Archivo");
     }//GEN-LAST:event_nuevoActionPerformed
 
@@ -462,17 +506,31 @@ public class TextEditor extends javax.swing.JFrame {
 
     private void pestanasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pestanasMouseClicked
         
-            System.out.println("Pres");
-            //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
-            scrollAux = (JScrollPane)pestanas.getSelectedComponent();
-            //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
-            viewAux = scrollAux.getViewport();
+            if(pestanas.getTabCount() != 0){
+                System.out.println("Pres");
+                //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
+                scrollAux = (JScrollPane)pestanas.getSelectedComponent();
+                
+                
+                System.out.println(pestanas.getTitleAt(pestanas.getSelectedIndex()));
+                selectField.setText(rutasPestanas.get(pestanas.getTitleAt(pestanas.getSelectedIndex())));
+                rutaSeleccionada = rutasPestanas.get(pestanas.getTitleAt(pestanas.getSelectedIndex()));
+                
+                if(rutaSeleccionada.equals("No Guardado")){
+                    System.out.println(rutaSeleccionada);
+                    guardarNormal.setEnabled(false);
+                }else{
+                    guardarNormal.setEnabled(true);
+                }
+                
+                //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
+                viewAux = scrollAux.getViewport();
+                //Se establece el editor con los datos obtenidos de la lectura
+                //Dentro del viewport esta el textpane, lo guardo en un objeto
+                areaAux = (JTextPane)viewAux.getView();
+
+            }
             
-            //Se establece el editor con los datos obtenidos de la lectura
-            //Dentro del viewport esta el textpane, lo guardo en un objeto
-            areaAux = (JTextPane)viewAux.getView();
-            
-            System.out.println(areaAux.getText());
     }//GEN-LAST:event_pestanasMouseClicked
 
     
@@ -564,7 +622,7 @@ public class TextEditor extends javax.swing.JFrame {
     //Se desactivan botones dependiendo de si el archivo es nuevo o se sobrescribe
     public void comprobarSeleccionado(){
         
-        if(seleccionado.getText().equals("")){
+        if(selectField.getText().equals("")){
             guardar.setEnabled(true);
             guardarNormal.setEnabled(false);
         }else{
@@ -572,6 +630,7 @@ public class TextEditor extends javax.swing.JFrame {
             guardarNormal.setEnabled(true); 
         }
     }
+    
 
     public void guardarComo(String texto)
     {
@@ -585,8 +644,9 @@ public class TextEditor extends javax.swing.JFrame {
         }
         //Funcion para obtener los nombres de las pestañas y guardarlos en el arreglo de nombres
         getNames();
+        indexSeleccionado = pestanas.getSelectedIndex();
 
-        sn = new SelectName(texto, componentes, nombs);
+        sn = new SelectName(texto, componentes, nombs, indexSeleccionado, nomSeleccionado, rutasPestanas);
         sn.setLocationRelativeTo(null);
         sn.setVisible(true);
         dispose();    
@@ -634,7 +694,7 @@ public class TextEditor extends javax.swing.JFrame {
     private javax.swing.JPanel panelCarpeta;
     private javax.swing.JTabbedPane pestanas;
     private javax.swing.JMenuItem reset;
-    private javax.swing.JTextField seleccionado;
+    private javax.swing.JTextField selectField;
     // End of variables declaration//GEN-END:variables
 
 }
