@@ -1,7 +1,10 @@
 package main;
 
+import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.JFileChooser;
+import javax.swing.JTabbedPane;
 
 
 public class SelectName extends javax.swing.JFrame {
@@ -24,9 +27,14 @@ public class SelectName extends javax.swing.JFrame {
     private CrearArchivo ca;
     //Clase principal del editor, se cargaran de nuevo la clase con el archivo guardado y seleccionado
     private TextEditor te;
+    
+    ArrayList<Component> componentes;
+    ArrayList<String> nombs;
 
-    public SelectName(String datos) {
+    public SelectName(String datos, ArrayList<Component> componentes,  ArrayList<String> nombs) {
         initComponents();
+        this.componentes = componentes;
+        this.nombs = nombs;
         calendario = Calendar.getInstance();
         ca = new CrearArchivo();
         //Se reciben los datos, es una forma se mantenerlos al mometo de cambiar de ventana, asi no se pierden
@@ -173,7 +181,7 @@ public class SelectName extends javax.swing.JFrame {
     public void ventanaEditor(){
         dispose();
         //Se define el objeto y se le mada la ruta y los datos guardados
-        te = new TextEditor(ruta, datos);
+        te = new TextEditor(ruta, datos, componentes, nombs);
         te.setLocationRelativeTo(null);
         te.setVisible(true);
     }

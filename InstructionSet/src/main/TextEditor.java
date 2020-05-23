@@ -1,7 +1,9 @@
 
 package main;
 
+import java.awt.Component;
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
@@ -11,6 +13,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.util.Hashtable;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
 
@@ -49,7 +52,11 @@ public class TextEditor extends javax.swing.JFrame {
     JScrollPane scrollAux;
     JViewport viewAux;
     
-    public TextEditor(String seleccionado, String datos) {
+    //Arreglos para guardar los componentes de las pestañas y sus nombres de pestaña
+    ArrayList<String> nombs = new ArrayList<String>();
+    ArrayList<Component> componentes = new ArrayList<Component>();
+    
+    public TextEditor(String seleccionado, String datos, ArrayList<Component> componentes,  ArrayList<String> nombs) {
         initComponents();
         
         //Se establecen los datos que se escribiran en el editor
@@ -57,12 +64,13 @@ public class TextEditor extends javax.swing.JFrame {
         //Definicion de los objetos
         controlArchivo = new CrearArchivo();
         conversor = new Conversor();
-        editor.setText(datos);
         leer = new AbrirArchivo();
-        //Numero a las lineas
-        numeroLinea = new NumeroLinea(editor);
-        editorScroll.setRowHeaderView(numeroLinea);
-        //Nodo
+        
+        this.componentes = componentes;
+        this.nombs = nombs;
+        //Funcion para establecer los componentes en el TabbedPane
+        setComponents();
+        
         //"seleccionado" es la ruta del archivo que se estara utilizando
         this.rutaSeleccionada = seleccionado;
         this.seleccionado.setText(seleccionado);
@@ -71,10 +79,31 @@ public class TextEditor extends javax.swing.JFrame {
         comprobarSeleccionado();
         carpetaBtnEstado();
         listenerArbolCarpeta();
-        listenersConversores();
      
     }
-
+    
+    //Establecer los  componentes a partir del arreglo recibido por parametros
+    private void setComponents(){
+        
+        if(componentes != null){
+           for(int i = 0; i < componentes.size(); i++){  
+               pestanas.add(nombs.get(i), componentes.get(i));
+               //Agrego los botones x para cerrar pestañas
+               buttonTabComponent = new ButtonTabComponent(pestanas);
+               pestanas.setTabComponentAt(pestanas.getTabCount()-1, buttonTabComponent);
+            } 
+        }
+    }
+    
+    //Funcion para obtener los nombres de las pestañas de los componentes
+    private void getNames(){
+        for(int i = 0; i < pestanas.getTabCount(); i++){
+            nombs.add(i, pestanas.getTitleAt(i));
+            System.out.println(pestanas.getTitleAt(i));
+        }
+    }
+    
+    
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -89,8 +118,6 @@ public class TextEditor extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         seleccionado = new javax.swing.JTextField();
         pestanas = new javax.swing.JTabbedPane();
-        editorScroll = new javax.swing.JScrollPane();
-        editor = new javax.swing.JTextPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         nuevo = new javax.swing.JMenuItem();
@@ -185,13 +212,11 @@ public class TextEditor extends javax.swing.JFrame {
 
         pestanas.setToolTipText("");
         pestanas.setName(""); // NOI18N
-
-        editor.setToolTipText("");
-        editor.setName(""); // NOI18N
-        editorScroll.setViewportView(editor);
-        editor.getAccessibleContext().setAccessibleName("Archivo");
-
-        pestanas.addTab("tab1", editorScroll);
+        pestanas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pestanasMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -271,7 +296,11 @@ public class TextEditor extends javax.swing.JFrame {
         jMenu2.setText("Convertir");
 
         convert.setText("Ensamblador a Binario");
-        
+        convert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                convertActionPerformed(evt);
+            }
+        });
         jMenu2.add(convert);
 
         convertBack.setText("Binario a Ensamblador");
@@ -309,7 +338,17 @@ public class TextEditor extends javax.swing.JFrame {
     //Metodo para el boton "Guardar como"
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
             //Se muestra la ventana para seleccionar el nombre del archivo y se le pasa por parametros los datos
-            sn = new SelectName(editor.getText());
+            //Limpieza de arreglos para evitar que se acumulen pestañas
+            componentes.clear();
+            nombs.clear();
+            //Lleno el arreglo de componentes con todas las "pestañas" de TabbedPane
+            for(int i = 0; i < pestanas.getComponentCount()-1; i++){
+                componentes.add(i, pestanas.getComponentAt(i));
+            }
+            //Funcion para obtener los nombres de las pestañas y guardarlos en el arreglo de nombres
+            getNames();
+
+            sn = new SelectName(areaAux.getText(), componentes, nombs);
             sn.setLocationRelativeTo(null);
             sn.setVisible(true);
             dispose();    
@@ -318,7 +357,7 @@ public class TextEditor extends javax.swing.JFrame {
     //Metodo para el boton "Guardar"
     private void guardarNormalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarNormalActionPerformed
             //Se le pasa por parametros los datos normales y la ruta para guardarlos en el mismo archivo
-            controlArchivo.crear(editor.getText(), rutaSeleccionada);
+            controlArchivo.crear(areaAux.getText(), rutaSeleccionada);
             System.out.println("archivo guardado");      
     }//GEN-LAST:event_guardarNormalActionPerformed
 
@@ -330,7 +369,6 @@ public class TextEditor extends javax.swing.JFrame {
     //Metodo para resetear todo
     public void reset(){
         seleccionado.setText("");
-        editor.setText("");
         guardar.setEnabled(true);
         guardarNormal.setEnabled(false);
         convert.setSelected(false);
@@ -364,7 +402,7 @@ public class TextEditor extends javax.swing.JFrame {
             leer.leer(ruta);
             
             //Pestaña
-            generarPestana();
+            generarPestana(nomArchivo);
             
             //establezco el texto en el objeto obtenido que pertenece al TextPane
             areaAux.setText(leer.getData());
@@ -428,16 +466,31 @@ public class TextEditor extends javax.swing.JFrame {
 
     //Abrir pestaña nueva
     private void nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoActionPerformed
-        
-            generarPestana();
+
+            generarPestana("Archivo");
     }//GEN-LAST:event_nuevoActionPerformed
 
     private void convertBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertBackActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_convertBackActionPerformed
 
+    private void pestanasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pestanasMouseClicked
+        
+            System.out.println("Pres");
+            //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
+            scrollAux = (JScrollPane)pestanas.getSelectedComponent();
+            //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
+            viewAux = scrollAux.getViewport();
+            
+            //Se establece el editor con los datos obtenidos de la lectura
+            //Dentro del viewport esta el textpane, lo guardo en un objeto
+            areaAux = (JTextPane)viewAux.getView();
+            
+            System.out.println(areaAux.getText());
+    }//GEN-LAST:event_pestanasMouseClicked
+
     
-    private void generarPestana(){
+    private void generarPestana(String nom){
         
             //Pestañas
             buttonTabComponent = new ButtonTabComponent(pestanas);
@@ -449,7 +502,7 @@ public class TextEditor extends javax.swing.JFrame {
             scrollNuevo.setRowHeaderView(numLinea);
             
             //Añado la pestaña con su nombre y panel de texto ya modificado
-            pestanas.add("Archivo", scrollNuevo);
+            pestanas.add(nom, scrollNuevo);
             //Le paso el objeto que permite cerrar las pestañas
             pestanas.setTabComponentAt(pestanas.getTabCount()-1, buttonTabComponent);
             //Selecciono la ultima pestaña seleccionada
@@ -533,30 +586,6 @@ public class TextEditor extends javax.swing.JFrame {
             guardarNormal.setEnabled(true); 
         }
     }
-
-    public void listenersConversores(){
-        convert.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                boolean status = conversor.toBinary(editor.getText());
-                if(!status)
-                {    //Si hubo algun error lo notifica
-                    JOptionPane.showMessageDialog(
-                        jMenu2,
-                        "Tiene un error en su codigo",
-                        "ERROR.",
-                        JOptionPane.ERROR_MESSAGE);
-                }
-                else
-                {
-                    sn = new SelectName(conversor.getDataBin());
-                    sn.setLocationRelativeTo(null);
-                    sn.setVisible(true);
-                    dispose();
-                }
-                convertActionPerformed(evt);
-            }
-        });
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem abrir;
@@ -565,8 +594,6 @@ public class TextEditor extends javax.swing.JFrame {
     private javax.swing.JToggleButton carpetaBTN;
     private javax.swing.JMenuItem convert;
     private javax.swing.JMenuItem convertBack;
-    private javax.swing.JTextPane editor;
-    private javax.swing.JScrollPane editorScroll;
     private javax.swing.JMenuItem guardar;
     private javax.swing.JMenuItem guardarNormal;
     private javax.swing.JLabel jLabel1;

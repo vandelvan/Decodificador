@@ -40,6 +40,7 @@ public class CrearArchivo {
                 
             } catch (IOException ex) {
                 Logger.getLogger(CrearArchivo.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("holas");
             }
         }else{
             try {
