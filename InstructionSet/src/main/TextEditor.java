@@ -79,7 +79,7 @@ public class TextEditor extends javax.swing.JFrame {
         comprobarSeleccionado();
         carpetaBtnEstado();
         listenerArbolCarpeta();
-     
+        listenersConversores();
     }
     
     //Establecer los  componentes a partir del arreglo recibido por parametros
@@ -337,21 +337,7 @@ public class TextEditor extends javax.swing.JFrame {
 
     //Metodo para el boton "Guardar como"
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
-            //Se muestra la ventana para seleccionar el nombre del archivo y se le pasa por parametros los datos
-            //Limpieza de arreglos para evitar que se acumulen pestañas
-            componentes.clear();
-            nombs.clear();
-            //Lleno el arreglo de componentes con todas las "pestañas" de TabbedPane
-            for(int i = 0; i < pestanas.getComponentCount()-1; i++){
-                componentes.add(i, pestanas.getComponentAt(i));
-            }
-            //Funcion para obtener los nombres de las pestañas y guardarlos en el arreglo de nombres
-            getNames();
-
-            sn = new SelectName(areaAux.getText(), componentes, nombs);
-            sn.setLocationRelativeTo(null);
-            sn.setVisible(true);
-            dispose();    
+            guardarComo(areaAux.getText());
     }//GEN-LAST:event_guardarActionPerformed
     
     //Metodo para el boton "Guardar"
@@ -585,6 +571,46 @@ public class TextEditor extends javax.swing.JFrame {
             guardar.setEnabled(true);
             guardarNormal.setEnabled(true); 
         }
+    }
+
+    public void guardarComo(String texto)
+    {
+        //Se muestra la ventana para seleccionar el nombre del archivo y se le pasa por parametros los datos
+        //Limpieza de arreglos para evitar que se acumulen pestañas
+        componentes.clear();
+        nombs.clear();
+        //Lleno el arreglo de componentes con todas las "pestañas" de TabbedPane
+        for(int i = 0; i < pestanas.getComponentCount()-1; i++){
+            componentes.add(i, pestanas.getComponentAt(i));
+        }
+        //Funcion para obtener los nombres de las pestañas y guardarlos en el arreglo de nombres
+        getNames();
+
+        sn = new SelectName(texto, componentes, nombs);
+        sn.setLocationRelativeTo(null);
+        sn.setVisible(true);
+        dispose();    
+    }
+
+    public void listenersConversores(){
+        convert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boolean status = conversor.toBinary(areaAux.getText());
+                if(!status)
+                {    //Si hubo algun error lo notifica
+                    JOptionPane.showMessageDialog(
+                        jMenu2,
+                        "Tiene un error en su codigo",
+                        "ERROR.",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                {
+                    guardarComo(conversor.getDataBin());
+                }
+                convertActionPerformed(evt);
+            }
+        });
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
