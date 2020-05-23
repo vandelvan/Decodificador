@@ -18,6 +18,7 @@ public class Conversor {
     public boolean toBinary(String datos){
         //Covertir el texto que estara en ensamblador a binario, si hay palabras reservadas
         String[] lineas = datos.split("\n");
+        datos = "";
         lineas = this.deleteComentarios(lineas);    //eliminamos los comentarios
         //Obtenemos opCode y Function de cada instruccion
         Instrucciones instruccion = new Instrucciones();
@@ -44,18 +45,24 @@ public class Conversor {
                     rd = instruccion.memSpace(rd); //Regresa la posicion de memoria en binario
                     rs = instruccion.memSpace(rs); //Regresa la posicion de memoria en binario
                     rt = instruccion.memSpace(rt); //Regresa la posicion de memoria en binario
-                    System.out.println(rd+" "+rs+" "+rt);
+                    if(rd == "" || rs == "" || rt == "")
+                        return false;
+                    String shamt = "00000";
+                    String comentario = "\t//"+linea;
+                    linea = opCode+rs.substring(0,2)+"\n";  //linea 1
+                    linea += rs.substring(2,5)+rt+"\n"; //linea 2
+                    linea += rd+shamt.substring(0,3)+"\n";  //linea 3
+                    linea += shamt.substring(3,5)+function+comentario+"\n"; //linea 4
                 }
                 else
                     return false;
                     
             }
-            System.out.println(opCode);
-            System.out.println(function);
-            System.out.println("- - - - - - - - - - -");
+            datos += linea;
         }
-
-    this.dataBin=datos;return true;
+        System.out.println(datos);
+        this.dataBin=datos;
+        return true;
 
     }
 

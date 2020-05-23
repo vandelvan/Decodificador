@@ -71,6 +71,7 @@ public class TextEditor extends javax.swing.JFrame {
         comprobarSeleccionado();
         carpetaBtnEstado();
         listenerArbolCarpeta();
+        listenersConversores();
      
     }
 
@@ -270,11 +271,7 @@ public class TextEditor extends javax.swing.JFrame {
         jMenu2.setText("Convertir");
 
         convert.setText("Ensamblador a Binario");
-        convert.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                convertActionPerformed(evt);
-            }
-        });
+        
         jMenu2.add(convert);
 
         convertBack.setText("Binario a Ensamblador");
@@ -535,6 +532,30 @@ public class TextEditor extends javax.swing.JFrame {
             guardar.setEnabled(true);
             guardarNormal.setEnabled(true); 
         }
+    }
+
+    public void listenersConversores(){
+        convert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boolean status = conversor.toBinary(editor.getText());
+                if(!status)
+                {    //Si hubo algun error lo notifica
+                    JOptionPane.showMessageDialog(
+                        jMenu2,
+                        "Tiene un error en su codigo",
+                        "ERROR.",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                {
+                    sn = new SelectName(conversor.getDataBin());
+                    sn.setLocationRelativeTo(null);
+                    sn.setVisible(true);
+                    dispose();
+                }
+                convertActionPerformed(evt);
+            }
+        });
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
