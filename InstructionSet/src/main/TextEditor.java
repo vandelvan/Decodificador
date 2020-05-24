@@ -364,15 +364,21 @@ public class TextEditor extends javax.swing.JFrame {
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
         /*Obtengo el panel seleccionado para evitar NullExeption*/
         //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
-        scrollAux = (JScrollPane)pestanas.getSelectedComponent();
-        //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
-        viewAux = scrollAux.getViewport();
-            
-       //Se establece el editor con los datos obtenidos de la lectura
-        //Dentro del viewport esta el textpane, lo guardo en un objeto
-        areaAux = (JTextPane)viewAux.getView();
         
-        guardarComo(areaAux.getText());
+        if(pestanas.getComponentCount() != 0){
+            scrollAux = (JScrollPane)pestanas.getSelectedComponent();
+            //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
+            viewAux = scrollAux.getViewport();
+
+           //Se establece el editor con los datos obtenidos de la lectura
+            //Dentro del viewport esta el textpane, lo guardo en un objeto
+            areaAux = (JTextPane)viewAux.getView();
+
+            guardarComo(areaAux.getText());
+        }
+        
+        
+        
     }//GEN-LAST:event_guardarActionPerformed
     
     //Metodo para el boton "Guardar"
