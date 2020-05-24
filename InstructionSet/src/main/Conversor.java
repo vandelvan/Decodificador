@@ -26,9 +26,7 @@ public class Conversor {
         for (String linea : lineas) {
             String[] lin;
             lin = linea.trim().split("\\s"); // Elimina espacios extra al principio o fin y separamos los espacios
-            System.out.println(linea);
             String inst = lin[0]; // lo primero es la instruccion
-            System.out.println(inst);
             String[] opFunc = instruccion.opcodeFunction(inst); // obtenemos opcode y function
             String opCode = opFunc[1];
             String function = opFunc[0];
@@ -36,20 +34,32 @@ public class Conversor {
             if (opCode == "" && function == "")
                 return false; // Error
             else if (opCode != "" && function == "") { // Si es tipo I o J
-                if (lin.length > 3 && lin[1] != null && lin[2] != null && lin[3] != null) {
-                    String rt = lin[1];
-                    String rs = lin[2];
-                    String immdt = lin[3];
-                    rt = instruccion.memSpace(rt); // Regresa la posicion de memoria en binario
-                    rs = instruccion.memSpace(rs); // Regresa la posicion de memoria en binario
-                    try {
-                        immdt = instruccion.intBin(Integer.parseInt(immdt));
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                    System.out.println(immdt);
-                } else
+                if(opCode == "000010"){    //Si es J
+                    //TO-DO INSTRUCCIONJ
                     return false;
+                }
+                else{   //Es tipo I
+                    if (lin.length > 3 && lin[1] != null && lin[2] != null && lin[3] != null) {
+                        String rt = lin[1];
+                        String rs = lin[2];
+                        String immdt = lin[3];
+                        rt = instruccion.memSpace(rt); // Regresa la posicion de memoria en binario
+                        rs = instruccion.memSpace(rs); // Regresa la posicion de memoria en binario
+                        if(rs == "" || rt == "")
+                            return false;
+                        try {
+                            immdt = instruccion.intBin(Integer.parseInt(immdt));
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                        String comentario = "\t//"+linea;
+                        linea = opCode+rs.substring(0,2)+"\n";  //linea 1
+                        linea += rs.substring(2,5)+rt+"\n"; //linea 2
+                        linea += immdt.substring(0,8)+"\n";  //linea 3
+                        linea += immdt.substring(8, 16)+comentario+"\n"; //linea 4
+                    } else
+                        return false;
+                }
             } else { // Es tipo R
                 if (lin.length > 3 && lin[1] != null && lin[2] != null && lin[3] != null) {
                     String rd = lin[1];
@@ -71,12 +81,10 @@ public class Conversor {
 
             }
             datos += linea;
-            System.out.println(opCode);
-            System.out.println(function);
-            System.out.println("- - - - - - - - - - -");
         }
 
         this.dataBin = datos;
+        System.out.println(datos);
         return true;
 
     }
