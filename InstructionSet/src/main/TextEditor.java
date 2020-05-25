@@ -592,7 +592,7 @@ public class TextEditor extends javax.swing.JFrame {
         
         if(!rutaGuardarComo.getRutaExt().equals("")){
             controlArchivo = new CrearArchivo();
-            controlArchivo.crear(areaAux.getText(), rutaGuardarComo.getRutaExt());
+            controlArchivo.crear(texto, rutaGuardarComo.getRutaExt());
             selectField.setText(rutaGuardarComo.getRutaExt());
             
             rutaGuardarComo.separarNomRuta();
