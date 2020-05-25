@@ -1,4 +1,4 @@
-//Prueba xd
+
 package main;
 
 import java.awt.Component;
@@ -20,8 +20,7 @@ import javax.swing.JViewport;
 public class TextEditor extends javax.swing.JFrame {
     
     private static final long serialVersionUID = 1L;
-    // SelectName es la clase que permite ponerle un nombre al archivo a guardar
-    private SelectName sn;
+
     //La cadena "rutaSeleccionada" contendra la rura seleccionada del archivo guardado o abierto
     private String rutaSeleccionada = "";
     //"CrearArchivo" es la clase que crea o sobrescribe un archivo
@@ -56,76 +55,26 @@ public class TextEditor extends javax.swing.JFrame {
     JScrollPane scrollAux;
     JViewport viewAux;
     
-    //Arreglos para guardar los componentes de las pestañas y sus nombres de pestaña
-    ArrayList<String> nombs = new ArrayList<String>();
-    ArrayList<Component> componentes = new ArrayList<Component>();
-    //Variable que guarda el indice de la pestaña que se guardara
-    int indexSeleccionado = 0;
-    //variable que guarda el nombre de la pestaña seleccionada cuando se clickea en Guardar como
-    String nomSeleccionado = "";
-    
+    //HashTable para guardar los nombres y rutas de las pestañas
     Hashtable<String, String> rutasPestanas = new Hashtable<>();
+    //Objeto para el funcionameito de guardar como
+    GenerarRuta rutaGuardarComo;
     
-    public TextEditor(  String seleccionado, 
-                        String datos, ArrayList<Component> componentes,  
-                        ArrayList<String> nombs, 
-                        int indexSeleccionado, 
-                        String nomSeleccionado, 
-                        Hashtable<String, String> rutasPestanas) {
+    
+    public TextEditor() {
         initComponents();
-        
-        //Se establecen los datos que se escribiran en el editor
-        this.datos = datos;
         //Definicion de los objetos
         controlArchivo = new CrearArchivo();
         conversor = new Conversor();
         leer = new AbrirArchivo();
+        rutasPestanas.put("Archivo", "No Guardado");
         
-        this.componentes = componentes;
-        this.nombs = nombs;
-        this.indexSeleccionado = indexSeleccionado;
-        this.rutaSeleccionada = seleccionado;
-        this.nomSeleccionado = nomSeleccionado;
-        this.rutasPestanas = rutasPestanas;
-        //Funcion para establecer los componentes en el TabbedPane
-        setComponents();
-        
-        //"seleccionado" es la ruta del archivo que se estara utilizando
-        
-        this.selectField.setText(seleccionado);
         this.selectField.setEditable(false);
         //Este metodo comprueba el campo seleccionado, y de ahi activa y desactiva botones
         comprobarSeleccionado();
         carpetaBtnEstado();
         listenerArbolCarpeta();
         listenersConversores();
-    }
-    
-    //Establecer los  componentes a partir del arreglo recibido por parametros
-    private void setComponents(){
-        
-        if(componentes != null){
-           for(int i = 0; i < componentes.size(); i++){  
-               pestanas.add(nombs.get(i), componentes.get(i));
-               
-               if(indexSeleccionado == i){
-                   pestanas.setTitleAt(i, nomSeleccionado);
-                   pestanas.setSelectedIndex(i);
-               }
-               
-               //Agrego los botones x para cerrar pestañas
-               buttonTabComponent = new ButtonTabComponent(pestanas);
-               pestanas.setTabComponentAt(pestanas.getTabCount()-1, buttonTabComponent);
-            } 
-        }
-    }
-    
-    //Funcion para obtener los nombres de las pestañas de los componentes
-    private void getNames(){
-        for(int i = 0; i < pestanas.getTabCount(); i++){
-            nombs.add(i, pestanas.getTitleAt(i));
-            System.out.println(pestanas.getTitleAt(i));
-        }
     }
     
     
@@ -362,10 +311,10 @@ public class TextEditor extends javax.swing.JFrame {
 
     //Metodo para el boton "Guardar como"
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
-        /*Obtengo el panel seleccionado para evitar NullExeption*/
-        //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
         
-        if(pestanas.getComponentCount() != 0){
+        //Si no hay pestañas no se ejecuta
+        if(pestanas.getTabCount()!= 0){
+            //Accedere a travez de los componentes hasta llegar al JTextPane y obtener el texto
             scrollAux = (JScrollPane)pestanas.getSelectedComponent();
             //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
             viewAux = scrollAux.getViewport();
@@ -406,15 +355,13 @@ public class TextEditor extends javax.swing.JFrame {
         rutasPestanas.put("Archivo", "No Guardado");
         datosRutas.clear();
         arbolCarpeta.setModel(null);
-        nombs.clear();
-        componentes.clear();
     }
     
     //Metodo para el boton "Abrir"
     private void abrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abrirActionPerformed
         
         //Se utiliza la clase para crear la ruta en donde se abrira el archivo
-        gr = new GenerarRuta(null, JFileChooser.FILES_ONLY);
+        gr = new GenerarRuta(JFileChooser.FILES_ONLY);
         gr.separarNomRuta();
         nomArchivo = gr.getNomSinRuta();
         
@@ -457,7 +404,7 @@ public class TextEditor extends javax.swing.JFrame {
     }//GEN-LAST:event_carpetaBTNActionPerformed
 
     private void btnAbrirCarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirCarpetaActionPerformed
-        rutaCarpeta=new GenerarRuta(null, JFileChooser.DIRECTORIES_ONLY);
+        rutaCarpeta=new GenerarRuta(JFileChooser.DIRECTORIES_ONLY);
 
         if(!rutaCarpeta.getRutaArchivo().equals("")){
             datosRutas.clear();
@@ -640,22 +587,19 @@ public class TextEditor extends javax.swing.JFrame {
 
     public void guardarComo(String texto)
     {
-        //Se muestra la ventana para seleccionar el nombre del archivo y se le pasa por parametros los datos
-        //Limpieza de arreglos para evitar que se acumulen pestañas
-        componentes.clear();
-        nombs.clear();
-        //Lleno el arreglo de componentes con todas las "pestañas" de TabbedPane
-        for(int i = 0; i < pestanas.getComponentCount()-1; i++){
-            componentes.add(i, pestanas.getComponentAt(i));
+        //Objeto para generar la ruta
+        rutaGuardarComo = new GenerarRuta(JFileChooser.FILES_ONLY);
+        
+        if(!rutaGuardarComo.getRutaExt().equals("")){
+            controlArchivo = new CrearArchivo();
+            controlArchivo.crear(areaAux.getText(), rutaGuardarComo.getRutaExt());
+            selectField.setText(rutaGuardarComo.getRutaExt());
+            
+            rutaGuardarComo.separarNomRuta();
+            rutasPestanas.put(rutaGuardarComo.getNomSinRuta(), rutaGuardarComo.getRutaExt());
+            pestanas.setTitleAt(pestanas.getSelectedIndex(), rutaGuardarComo.getNomSinRuta());
+            
         }
-        //Funcion para obtener los nombres de las pestañas y guardarlos en el arreglo de nombres
-        getNames();
-        indexSeleccionado = pestanas.getSelectedIndex();
-
-        sn = new SelectName(texto, componentes, nombs, indexSeleccionado, nomSeleccionado, rutasPestanas);
-        sn.setLocationRelativeTo(null);
-        sn.setVisible(true);
-        dispose();    
     }
 
     public void listenersConversores(){
