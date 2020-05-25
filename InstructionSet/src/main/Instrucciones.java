@@ -272,9 +272,14 @@ public class Instrucciones {
         }
     }
 
-    public String intBin(int num)
+    public String intBin(int num, int type)
     {
-        String bin = String.format("%16s",
+        String bin = "";
+        if(type == 1)   //tipo I
+            bin = String.format("%16s",
+                Integer.toBinaryString(0xFFFF & num)).replaceAll(" ", "0");
+        else if(type == 2)  //tipo J
+            bin = String.format("%26s",
                 Integer.toBinaryString(0xFFFF & num)).replaceAll(" ", "0");
         return bin;
         

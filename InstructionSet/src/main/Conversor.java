@@ -35,8 +35,31 @@ public class Conversor {
                 return false; // Error
             else if (opCode != "" && function == "") { // Si es tipo I o J
                 if(opCode == "000010"){    //Si es J
-                    //TO-DO INSTRUCCIONJ
-                    return false;
+                    if (lin.length > 1 && lin[1] != null) {
+                        String addr = "";
+                        try {
+                            addr = lin[1].split("x")[1]; //0x....
+                        }
+                        catch(ArrayIndexOutOfBoundsException e){
+                            return false;
+                        }
+                        //encerrado en try catch para evitar errores de conversion
+                        try {
+                            //si es mayor al maximo de instrucciones o no es multiplo de 4 (inicio de instrucciones)
+                            if(Integer.parseInt(addr) > 512 || Integer.parseInt(addr) % 4 != 0)
+                                return false;
+                            addr = instruccion.intBin(Integer.parseInt(addr),2);
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                        String comentario = "\t//"+linea;
+                        linea = opCode+addr.substring(0,2)+"\n";  //linea 1
+                        linea += addr.substring(2,10)+"\n"; //linea 2
+                        linea += addr.substring(10,18)+"\n";  //linea 3
+                        linea += addr.substring(18,26)+comentario+"\n"; //linea 4                        
+                    }
+                    else
+                        return false;
                 }
                 else{   //Es tipo I
                     if (lin.length > 3 && lin[1] != null && lin[2] != null && lin[3] != null) {
@@ -48,7 +71,7 @@ public class Conversor {
                         if(rs == "" || rt == "")
                             return false;
                         try {
-                            immdt = instruccion.intBin(Integer.parseInt(immdt));
+                            immdt = instruccion.intBin(Integer.parseInt(immdt),1);
                         } catch (NumberFormatException e) {
                             return false;
                         }
