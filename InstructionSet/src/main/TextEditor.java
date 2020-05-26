@@ -83,6 +83,7 @@ public class TextEditor extends javax.swing.JFrame {
 
         jToolBar1 = new javax.swing.JToolBar();
         carpetaBTN = new javax.swing.JToggleButton();
+        depurar = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         panelCarpeta = new javax.swing.JPanel();
         btnAbrirCarpeta = new javax.swing.JButton();
@@ -122,6 +123,17 @@ public class TextEditor extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(carpetaBTN);
+
+        depurar.setText("Depurar");
+        depurar.setFocusable(false);
+        depurar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        depurar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        depurar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                depurarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(depurar);
 
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -486,6 +498,13 @@ public class TextEditor extends javax.swing.JFrame {
             
     }//GEN-LAST:event_pestanasMouseClicked
 
+    private void depurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_depurarActionPerformed
+        // TODO add your handling code here:
+        MemDebug debug = new MemDebug(areaAux.getText());
+        debug.setLocationRelativeTo(null);
+        debug.setVisible(true);
+    }//GEN-LAST:event_depurarActionPerformed
+
     
     private void generarPestana(String nom){
         
@@ -630,6 +649,7 @@ public class TextEditor extends javax.swing.JFrame {
     private javax.swing.JToggleButton carpetaBTN;
     private javax.swing.JMenuItem convert;
     private javax.swing.JMenuItem convertBack;
+    private javax.swing.JButton depurar;
     private javax.swing.JMenuItem guardar;
     private javax.swing.JMenuItem guardarNormal;
     private javax.swing.JLabel jLabel1;
