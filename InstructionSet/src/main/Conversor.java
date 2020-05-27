@@ -19,75 +19,80 @@ public class Conversor {
         // Obtenemos opCode y Function de cada instruccion
         Instrucciones instruccion = new Instrucciones();
         for (String linea : lineas) {
-            String opCode = linea.substring(0,6);
-            //Conseguimos el String de la instruccion dependiendo de su tipo R/I/J
-            if(opCode == "000000")  //Tipo R
+            System.out.println(linea);
+            if(linea != null)
             {
-                String function = linea.substring(26,32);
-                String inst = instruccion.getInstR(function);
-                if(inst == "")
-                    return false;
-                String rd = linea.substring(16,21);
-                String rt = linea.substring(11,16);
-                String rs = linea.substring(6,11);
-                rd = instruccion.memSpaceToString(rd, false);   //regresa la posicion de memoria en texto
-                rt = instruccion.memSpaceToString(rt, false);   //regresa la posicion de memoria en texto
-                rs = instruccion.memSpaceToString(rs, true);    //regresa la posicion de memoria en texto
-                if(rd == "" || rs == "" || rt == "")
-                    return false;
-                linea = inst + " ";  //Instruccion
-                linea += rd + " ";   //rd
-                linea += rs + " ";   //rs
-                linea += rt;         //rt
-            }
-            else    //Tipo I/J o BITSWAP
-            {
-                String inst = instruccion.getInstIJ(opCode);
-                if(inst == "")
-                    return false;
-                if(inst == "BITSWAP")   //tipo R caso especial con opCode
+                String opCode = linea.substring(0,6);
+                System.out.println(linea);
+                System.out.println("aa "+opCode);
+                //Conseguimos el String de la instruccion dependiendo de su tipo R/I/J
+                if(opCode.equals("000000"))  //Tipo R
                 {
+                    String function = linea.substring(26,32);
+                    String inst = instruccion.getInstR(function);
+                    if(inst == "")
+                        return false;
                     String rd = linea.substring(16,21);
                     String rt = linea.substring(11,16);
                     String rs = linea.substring(6,11);
                     rd = instruccion.memSpaceToString(rd, false);   //regresa la posicion de memoria en texto
-                    rt = instruccion.memSpaceToString(rt, false);   //regresa la posicion de memoria en texto
-                    rs = instruccion.memSpaceToString(rs, true);    //regresa la posicion de memoria en texto
+                    rt = instruccion.memSpaceToString(rt, true);   //regresa la posicion de memoria en texto
+                    rs = instruccion.memSpaceToString(rs, false);    //regresa la posicion de memoria en texto
                     if(rd == "" || rs == "" || rt == "")
                         return false;
                     linea = inst + " ";  //Instruccion
                     linea += rd + " ";   //rd
                     linea += rs + " ";   //rs
-                    linea += rt;         //rt
+                    linea += rt + "\n";         //rt
                 }
-                else if(inst == "J")
+                else    //Tipo I/J o BITSWAP
                 {
-                    String addr = linea.substring(6, 32);
-                    addr = String.valueOf(Integer.parseInt(addr, 2));
-                    linea = inst + " ";
-                    linea += "0x"+addr;
-                }
-                else
-                {   //Tipo J
-                    String immdt = linea.substring(16,32);
-                    String rt = linea.substring(11,16);
-                    String rs = linea.substring(6,11);
-                    rt = instruccion.memSpaceToString(rt, false);   //regresa la posicion de memoria en texto
-                    rs = instruccion.memSpaceToString(rs, false);    //regresa la posicion de memoria en texto
-                    immdt = String.valueOf(Integer.parseInt(immdt, 2)); //pasamos el inmediato de binario a entero
-                    if(rs == "" || rt == "")
+                    String inst = instruccion.getInstIJ(opCode);
+                    if(inst == "")
                         return false;
-                    linea = inst + " ";  //Instruccion
-                    linea += rt + " ";   //rt
-                    linea += rs + " ";   //rs
-                    linea += immdt;      //inmediato
+                    if(inst == "BITSWAP")   //tipo R caso especial con opCode
+                    {
+                        String rd = linea.substring(16,21);
+                        String rt = linea.substring(11,16);
+                        String rs = linea.substring(6,11);
+                        rd = instruccion.memSpaceToString(rd, false);   //regresa la posicion de memoria en texto
+                        rt = instruccion.memSpaceToString(rt, false);   //regresa la posicion de memoria en texto
+                        rs = instruccion.memSpaceToString(rs, true);    //regresa la posicion de memoria en texto
+                        if(rd == "" || rs == "" || rt == "")
+                            return false;
+                        linea = inst + " ";  //Instruccion
+                        linea += rd + " ";   //rd
+                        linea += rs + " ";   //rs
+                        linea += rt + "\n";         //rt
+                    }
+                    else if(inst == "J")
+                    {
+                        String addr = linea.substring(6, 32);
+                        addr = String.valueOf(Integer.parseInt(addr, 2));
+                        linea = inst + " ";
+                        linea += "0x"+addr + "\n";
+                    }
+                    else
+                    {   //Tipo J
+                        String immdt = linea.substring(16,32);
+                        String rt = linea.substring(11,16);
+                        String rs = linea.substring(6,11);
+                        rt = instruccion.memSpaceToString(rt, false);   //regresa la posicion de memoria en texto
+                        rs = instruccion.memSpaceToString(rs, false);    //regresa la posicion de memoria en texto
+                        immdt = String.valueOf(Integer.parseInt(immdt, 2)); //pasamos el inmediato de binario a entero
+                        if(rs == "" || rt == "")
+                            return false;
+                        linea = inst + " ";  //Instruccion
+                        linea += rt + " ";   //rt
+                        linea += rs + " ";   //rs
+                        linea += immdt + "\n";      //inmediato
+                    }
                 }
-            }
-
-            
-            datos += linea;
+                datos += linea;
+                }
         }
 
+        System.out.println("Si samle");
         this.dataAsm = datos;
         System.out.println(datos);
         return true;
@@ -206,10 +211,16 @@ public class Conversor {
         else if(tipo == 2)  //si es bin
             com = "//"; //los comentarios son delimitados por //
         for (int i = 0; i < lineas.length; i++) {
-            lineas[i] = lineas[i].split(com)[0]; // Eliminamos comentarios de cada linea
+            try
+            {
+                lineas[i] = lineas[i].split(com)[0]; // Eliminamos comentarios de cada linea
+            }
+            catch(NullPointerException e)
+            {
+                break;
+            }
             if (lineas[i].equals("")) { // si la linea sin comentario no tiene nada
-                System.arraycopy(lineas, i + 1, lineas, i, lineas.length - 1 - i); // se elimina el espacio vacio del
-                                                                                   // array
+                System.arraycopy(lineas, i + 1, lineas, i, lineas.length - 1 - i); // se elimina el espacio vacio del array
                 i--; // volvemos a checar el indice ahora ocupado por otro string
             }
         }
@@ -218,11 +229,12 @@ public class Conversor {
 
     public String[] completarInstruccion(String[] lineas)
     {
-        for(int i = 0; i < lineas.length; i += 4)
+        String[] aux = new String[lineas.length];
+        for(int i = 0; i <= lineas.length-4; i = i + 4)
         {
-            lineas[i] = lineas[i]+lineas[i+1]+lineas[i+2]+lineas[i+3];
+            aux[i] = lineas[i]+lineas[i+1]+lineas[i+2]+lineas[i+3];
         }
-        return lineas;
+        return aux;
     }
 
 }

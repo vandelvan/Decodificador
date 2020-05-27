@@ -34,7 +34,8 @@ public class DebugMem {
         
         System.out.print("Empezando debuggeo\n"); 
         String[] lineas = currCode.split("\n");
-        lineas = this.deleteComentarios(lineas); // eliminamos los comentarios
+        Conversor delCom = new Conversor();
+        lineas = delCom.deleteComentarios(lineas,1); // eliminamos los comentarios
         //datos = "";
         // Obtenemos opCode y Function de cada instruccion
         System.out.print("Entrando a obtencion de opcodes, lineas " + lineas.length);
@@ -256,18 +257,6 @@ public class DebugMem {
             model.addRow(new Object[]{memoria[i][0], formatWord(memoria[i][1]), Integer.parseInt(memoria[i][1],2)});
         }
         
-    }
-    
-    public String[] deleteComentarios(String[] lineas) {
-        for (int i = 0; i < lineas.length; i++) {
-            lineas[i] = lineas[i].split("#")[0]; // Eliminamos comentarios de cada linea
-            if (lineas[i].equals("")) { // si la linea sin comentario no tiene nada
-                System.arraycopy(lineas, i + 1, lineas, i, lineas.length - 1 - i); // se elimina el espacio vacio del
-                                                                                   // array
-                i--; // volvemos a checar el indice ahora ocupado por otro string
-            }
-        }
-        return lineas;
     }
 
     

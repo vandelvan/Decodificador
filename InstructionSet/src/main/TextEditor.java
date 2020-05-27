@@ -82,7 +82,6 @@ public class TextEditor extends javax.swing.JFrame {
         comprobarSeleccionado();
         carpetaBtnEstado();
         listenerArbolCarpeta();
-        listenersConversores();
     }
     
     
@@ -547,10 +546,72 @@ public class TextEditor extends javax.swing.JFrame {
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
         System.out.println("Listener ASM_BIN");
+        //Cuando no hay pestañas no se ejecuta
+        if(pestanas.getTabCount() != 0){
+            boolean status = conversor.toBinary(areaAux.getText());
+            if(!status)
+            {    //Si hubo algun error lo notifica
+                JOptionPane.showMessageDialog(
+                    jMenu2,
+                    "Tiene un error en su codigo",
+                    "ERROR.",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+            else
+            {
+                //Si no hay ruta no guarda nada
+                if(rutaGuardarComo.getRutaExt() != ""){
+                    //Creo una nueva pestaña vacia
+                    generarPestana("Archivo");
+                    guardarComo(conversor.getDataBin());   
+                    
+                    //Si se guardo, se establece la nueva pestaña con los datos
+                    if(rutaGuardarComo.getIndicadorRuta() == true){
+                        areaAux.setText(conversor.getDataBin()); 
+                    }else{//Si no se guarda, elimino la pestaña creada y reestablezco la pestaña seleccionada
+                        pestanas.removeTabAt(pestanas.getSelectedIndex());
+                        setSelectedTab();
+                    }
+                    conversor.dataBin = "";
+                }
+            }
+        }
     }//GEN-LAST:event_convertActionPerformed
 
     private void convertBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertBackActionPerformed
         System.out.println("Listener BIN_ASM");
+        //Cuando no hay pestañas no se ejecuta
+        if(pestanas.getTabCount() != 0){
+            boolean status = conversor.toAssembly(areaAux.getText());
+            if(!status)
+            {    //Si hubo algun error lo notifica
+                JOptionPane.showMessageDialog(
+                    jMenu2,
+                    "Tiene un error en su codigo",
+                    "ERROR.",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+            else
+            {
+                //Si no hay ruta no guarda nada
+                if(rutaGuardarComo.getRutaExt() != ""){
+                    
+                    //Creo una nueva pestaña vacia
+                    generarPestana("Archivo");
+                    guardarComo(conversor.getDataAsm());   
+                    
+                    //Si se guardo, se establece la nueva pestaña con los datos
+                    if(rutaGuardarComo.getIndicadorRuta() == true){
+                        areaAux.setText(conversor.getDataAsm()); 
+                    }else{//Si no se guarda, elimino la pestaña creada y reestablezco la pestaña seleccionada
+                        pestanas.removeTabAt(pestanas.getSelectedIndex());
+                        setSelectedTab();
+                    }
+                    conversor.dataAsm = "";
+                }
+
+            }
+        }
     }//GEN-LAST:event_convertBackActionPerformed
 
     
@@ -666,49 +727,6 @@ public class TextEditor extends javax.swing.JFrame {
             pestanas.setTitleAt(pestanas.getSelectedIndex(), rutaGuardarComo.getNomSinRuta());
             rutaGuardarComo.resetRutas();
         }
-    }
-
-    public void listenersConversores(){
-        convert.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                
-                //Cuando no hay pestañas no se ejecuta
-                if(pestanas.getTabCount() != 0){
-                    boolean status = conversor.toBinary(areaAux.getText());
-                    if(!status)
-                    {    //Si hubo algun error lo notifica
-                        JOptionPane.showMessageDialog(
-                            jMenu2,
-                            "Tiene un error en su codigo",
-                            "ERROR.",
-                            JOptionPane.ERROR_MESSAGE);
-                    }
-                    else
-                    {
-                        //Si no hay ruta no guarda nada
-                        if(rutaGuardarComo.getRutaExt() != ""){
-                            
-                            //Creo una nueva pestaña vacia
-                            generarPestana("Archivo");
-                            guardarComo(conversor.getDataBin());   
-                            
-                            //Si se guardo, se establece la nueva pestaña con los datos
-                            if(rutaGuardarComo.getIndicadorRuta() == true){
-                                areaAux.setText(conversor.getDataBin()); 
-                            }else{//Si no se guarda, elimino la pestaña creada y reestablezco la pestaña seleccionada
-                                pestanas.removeTabAt(pestanas.getSelectedIndex());
-                                setSelectedTab();
-                            }
-                            conversor.dataBin = "";
-                                
-                        }
-
-                    }
-                }
-
-                convertActionPerformed(evt);
-            }
-        });
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
