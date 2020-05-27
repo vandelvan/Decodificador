@@ -10,16 +10,94 @@ public class Conversor {
 
     }
 
-    public void toAssembly(String datos) {
-        // Convertir el texto normal a ensamblador, se muestran las palabras reservadas
+    public boolean toAssembly(String datos) {
+        // Convertir de binario a ensamblador
+        String[] lineas = datos.split("\n");
+        lineas = this.completarInstruccion(lineas);
+        lineas = this.deleteComentarios(lineas,2); // eliminamos los comentarios
+        datos = "";
+        // Obtenemos opCode y Function de cada instruccion
+        Instrucciones instruccion = new Instrucciones();
+        for (String linea : lineas) {
+            String opCode = linea.substring(0,6);
+            //Conseguimos el String de la instruccion dependiendo de su tipo R/I/J
+            if(opCode == "000000")  //Tipo R
+            {
+                String function = linea.substring(26,32);
+                String inst = instruccion.getInstR(function);
+                if(inst == "")
+                    return false;
+                String rd = linea.substring(16,21);
+                String rt = linea.substring(11,16);
+                String rs = linea.substring(6,11);
+                rd = instruccion.memSpaceToString(rd, false);   //regresa la posicion de memoria en texto
+                rt = instruccion.memSpaceToString(rt, false);   //regresa la posicion de memoria en texto
+                rs = instruccion.memSpaceToString(rs, true);    //regresa la posicion de memoria en texto
+                if(rd == "" || rs == "" || rt == "")
+                    return false;
+                linea = inst + " ";  //Instruccion
+                linea += rd + " ";   //rd
+                linea += rs + " ";   //rs
+                linea += rt;         //rt
+            }
+            else    //Tipo I/J o BITSWAP
+            {
+                String inst = instruccion.getInstIJ(opCode);
+                if(inst == "")
+                    return false;
+                if(inst == "BITSWAP")   //tipo R caso especial con opCode
+                {
+                    String rd = linea.substring(16,21);
+                    String rt = linea.substring(11,16);
+                    String rs = linea.substring(6,11);
+                    rd = instruccion.memSpaceToString(rd, false);   //regresa la posicion de memoria en texto
+                    rt = instruccion.memSpaceToString(rt, false);   //regresa la posicion de memoria en texto
+                    rs = instruccion.memSpaceToString(rs, true);    //regresa la posicion de memoria en texto
+                    if(rd == "" || rs == "" || rt == "")
+                        return false;
+                    linea = inst + " ";  //Instruccion
+                    linea += rd + " ";   //rd
+                    linea += rs + " ";   //rs
+                    linea += rt;         //rt
+                }
+                else if(inst == "J")
+                {
+                    String addr = linea.substring(6, 32);
+                    addr = String.valueOf(Integer.parseInt(addr, 2));
+                    linea = inst + " ";
+                    linea += "0x"+addr;
+                }
+                else
+                {   //Tipo J
+                    String immdt = linea.substring(16,32);
+                    String rt = linea.substring(11,16);
+                    String rs = linea.substring(6,11);
+                    rt = instruccion.memSpaceToString(rt, false);   //regresa la posicion de memoria en texto
+                    rs = instruccion.memSpaceToString(rs, false);    //regresa la posicion de memoria en texto
+                    immdt = String.valueOf(Integer.parseInt(immdt, 2)); //pasamos el inmediato de binario a entero
+                    if(rs == "" || rt == "")
+                        return false;
+                    linea = inst + " ";  //Instruccion
+                    linea += rt + " ";   //rt
+                    linea += rs + " ";   //rs
+                    linea += immdt;      //inmediato
+                }
+            }
+
+            
+            datos += linea;
+        }
+
         this.dataAsm = datos;
+        System.out.println(datos);
+        return true;
     }
 
     public boolean toBinary(String datos) {
         // Covertir el texto que estara en ensamblador a binario, si hay palabras
         // reservadas
         String[] lineas = datos.split("\n");
-        lineas = this.deleteComentarios(lineas); // eliminamos los comentarios
+        lineas = this.deleteComentarios(lineas,1); // eliminamos los comentarios
         datos = "";
         // Obtenemos opCode y Function de cada instruccion
         Instrucciones instruccion = new Instrucciones();
@@ -121,14 +199,28 @@ public class Conversor {
     }
 
     // Funcion para ignorar los comentarios
-    public String[] deleteComentarios(String[] lineas) {
+    public String[] deleteComentarios(String[] lineas, int tipo) {
+        String com = "";
+        if(tipo == 1)       //si es asm
+            com = "#";  //los comentarios son delimitados por #
+        else if(tipo == 2)  //si es bin
+            com = "//"; //los comentarios son delimitados por //
         for (int i = 0; i < lineas.length; i++) {
-            lineas[i] = lineas[i].split("#")[0]; // Eliminamos comentarios de cada linea
+            lineas[i] = lineas[i].split(com)[0]; // Eliminamos comentarios de cada linea
             if (lineas[i].equals("")) { // si la linea sin comentario no tiene nada
                 System.arraycopy(lineas, i + 1, lineas, i, lineas.length - 1 - i); // se elimina el espacio vacio del
                                                                                    // array
                 i--; // volvemos a checar el indice ahora ocupado por otro string
             }
+        }
+        return lineas;
+    }
+
+    public String[] completarInstruccion(String[] lineas)
+    {
+        for(int i = 0; i < lineas.length; i += 4)
+        {
+            lineas[i] = lineas[i]+lineas[i+1]+lineas[i+2]+lineas[i+3];
         }
         return lineas;
     }
