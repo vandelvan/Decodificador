@@ -325,6 +325,11 @@ public class TextEditor extends javax.swing.JFrame {
         jMenu2.add(convert);
 
         convertBack.setText("Binario a Ensamblador");
+        convertBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                convertBackActionPerformed(evt);
+            }
+        });
         jMenu2.add(convertBack);
 
         jMenuBar1.add(jMenu2);
@@ -541,8 +546,12 @@ public class TextEditor extends javax.swing.JFrame {
     }//GEN-LAST:event_depurarActionPerformed
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
-        // TODO add your handling code here:
+        System.out.println("Listener ASM_BIN");
     }//GEN-LAST:event_convertActionPerformed
+
+    private void convertBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertBackActionPerformed
+        System.out.println("Listener BIN_ASM");
+    }//GEN-LAST:event_convertBackActionPerformed
 
     
     private void generarPestana(String nom){
