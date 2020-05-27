@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
+import javax.swing.table.DefaultTableModel;
 
 public class TextEditor extends javax.swing.JFrame {
     
@@ -59,6 +60,8 @@ public class TextEditor extends javax.swing.JFrame {
     Hashtable<String, String> rutasPestanas = new Hashtable<>();
     //Objeto para el funcionameito de guardar como
     GenerarRuta rutaGuardarComo;
+    //Modelo para la tabla debug
+    DefaultTableModel modeloDebug;
     
     
     public TextEditor() {
@@ -68,6 +71,11 @@ public class TextEditor extends javax.swing.JFrame {
         conversor = new Conversor();
         leer = new AbrirArchivo();
         rutasPestanas.put("Archivo", "No Guardado");
+        rutaGuardarComo = new GenerarRuta();
+        
+        modeloDebug = new DefaultTableModel();
+        modeloDebug.setColumnIdentifiers(new Object[]{"Direccion", "Valor", "Decimal"});
+        tablaDebug.setModel(modeloDebug);
         
         this.selectField.setEditable(false);
         //Este metodo comprueba el campo seleccionado, y de ahi activa y desactiva botones
@@ -93,6 +101,9 @@ public class TextEditor extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         selectField = new javax.swing.JTextField();
         pestanas = new javax.swing.JTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tablaDebug = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         nuevo = new javax.swing.JMenuItem();
@@ -204,6 +215,27 @@ public class TextEditor extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jScrollPane1.setViewportView(tablaDebug);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -215,7 +247,9 @@ public class TextEditor extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(panelCarpeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pestanas)))
+                        .addComponent(pestanas, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -224,7 +258,8 @@ public class TextEditor extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pestanas)
-                    .addComponent(panelCarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(panelCarpeta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(12, 12, 12)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -290,11 +325,6 @@ public class TextEditor extends javax.swing.JFrame {
         jMenu2.add(convert);
 
         convertBack.setText("Binario a Ensamblador");
-        convertBack.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                convertBackActionPerformed(evt);
-            }
-        });
         jMenu2.add(convertBack);
 
         jMenuBar1.add(jMenu2);
@@ -305,7 +335,7 @@ public class TextEditor extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -367,14 +397,17 @@ public class TextEditor extends javax.swing.JFrame {
         rutasPestanas.put("Archivo", "No Guardado");
         datosRutas.clear();
         arbolCarpeta.setModel(null);
+        modeloDebug.setRowCount(0);
     }
     
     //Metodo para el boton "Abrir"
     private void abrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abrirActionPerformed
         
         //Se utiliza la clase para crear la ruta en donde se abrira el archivo
-        gr = new GenerarRuta(JFileChooser.FILES_ONLY);
+        gr = new GenerarRuta();
+        gr.crearRuta(JFileChooser.FILES_ONLY, true);
         gr.separarNomRuta();
+        
         nomArchivo = gr.getNomSinRuta();
         
         abrirArchivo(gr.getRutaArchivo());
@@ -408,15 +441,13 @@ public class TextEditor extends javax.swing.JFrame {
     }
     
     
-    private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
-    }//GEN-LAST:event_convertActionPerformed
-
     private void carpetaBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_carpetaBTNActionPerformed
         carpetaBtnEstado();
     }//GEN-LAST:event_carpetaBTNActionPerformed
 
     private void btnAbrirCarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirCarpetaActionPerformed
-        rutaCarpeta=new GenerarRuta(JFileChooser.DIRECTORIES_ONLY);
+        rutaCarpeta=new GenerarRuta();
+        rutaCarpeta.crearRuta(JFileChooser.DIRECTORIES_ONLY, false);
 
         if(!rutaCarpeta.getRutaArchivo().equals("")){
             datosRutas.clear();
@@ -465,45 +496,53 @@ public class TextEditor extends javax.swing.JFrame {
             generarPestana("Archivo");
     }//GEN-LAST:event_nuevoActionPerformed
 
-    private void convertBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertBackActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_convertBackActionPerformed
-
+    
     private void pestanasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pestanasMouseClicked
         
-            if(pestanas.getTabCount() != 0){
-                System.out.println("Pres");
-                //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
-                scrollAux = (JScrollPane)pestanas.getSelectedComponent();
-                
-                
-                System.out.println(pestanas.getTitleAt(pestanas.getSelectedIndex()));
-                selectField.setText(rutasPestanas.get(pestanas.getTitleAt(pestanas.getSelectedIndex())));
-                rutaSeleccionada = rutasPestanas.get(pestanas.getTitleAt(pestanas.getSelectedIndex()));
-                
-                if(rutaSeleccionada.equals("No Guardado")){
-                    System.out.println(rutaSeleccionada);
-                    guardarNormal.setEnabled(false);
-                }else{
-                    guardarNormal.setEnabled(true);
-                }
-                
-                //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
-                viewAux = scrollAux.getViewport();
-                //Se establece el editor con los datos obtenidos de la lectura
-                //Dentro del viewport esta el textpane, lo guardo en un objeto
-                areaAux = (JTextPane)viewAux.getView();
-
-            }
-            
+        setSelectedTab();
     }//GEN-LAST:event_pestanasMouseClicked
 
+    
+    private void setSelectedTab(){
+        if(pestanas.getTabCount() != 0){
+            System.out.println("Pres");
+            //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
+            scrollAux = (JScrollPane)pestanas.getSelectedComponent();
+
+
+            System.out.println(pestanas.getTitleAt(pestanas.getSelectedIndex()));
+            selectField.setText(rutasPestanas.get(pestanas.getTitleAt(pestanas.getSelectedIndex())));
+            rutaSeleccionada = rutasPestanas.get(pestanas.getTitleAt(pestanas.getSelectedIndex()));
+
+            if(rutaSeleccionada.equals("No Guardado")){
+                System.out.println(rutaSeleccionada);
+                guardarNormal.setEnabled(false);
+            }else{
+                guardarNormal.setEnabled(true);
+            }
+
+            //El viewport es lo que esta dentro del scroll, tambien lo guardo en un objeto
+            viewAux = scrollAux.getViewport();
+            //Se establece el editor con los datos obtenidos de la lectura
+            //Dentro del viewport esta el textpane, lo guardo en un objeto
+            areaAux = (JTextPane)viewAux.getView();
+
+        }  
+    }
+    
+    
     private void depurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_depurarActionPerformed
         // TODO add your handling code here:
-        MemDebug debug = new MemDebug(areaAux.getText());
-        debug.setLocationRelativeTo(null);
-        debug.setVisible(true);
+        
+        if(pestanas.getTabCount() != 0){
+            DebugMem debug = new DebugMem(areaAux.getText(), tablaDebug);
+        }
+        
     }//GEN-LAST:event_depurarActionPerformed
+
+    private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_convertActionPerformed
 
     
     private void generarPestana(String nom){
@@ -571,7 +610,7 @@ public class TextEditor extends javax.swing.JFrame {
                 }
                 
                 if(datosRutas.get(nodo.getUserObject()) != null){
-                    System.out.println(datosRutas.get(nodo.getUserObject()));
+                    //System.out.println(datosRutas.get(nodo.getUserObject()));
                     nomArchivo = (String) nodo.getUserObject();
                     abrirArchivo(datosRutas.get(nodo.getUserObject()));
                 }
@@ -583,10 +622,8 @@ public class TextEditor extends javax.swing.JFrame {
     
     private void carpetaBtnEstado(){
         if(carpetaBTN.isSelected()){
-            System.out.println("presionado");
             panelCarpeta.setVisible(true);
         }else{
-            System.out.println("No presionado");
             panelCarpeta.setVisible(false);
         }
     }
@@ -607,7 +644,7 @@ public class TextEditor extends javax.swing.JFrame {
     public void guardarComo(String texto)
     {
         //Objeto para generar la ruta
-        rutaGuardarComo = new GenerarRuta(JFileChooser.FILES_ONLY);
+        rutaGuardarComo.crearRuta(JFileChooser.FILES_ONLY, false);
         
         if(!rutaGuardarComo.getRutaExt().equals("")){
             controlArchivo = new CrearArchivo();
@@ -615,28 +652,51 @@ public class TextEditor extends javax.swing.JFrame {
             selectField.setText(rutaGuardarComo.getRutaExt());
             
             rutaGuardarComo.separarNomRuta();
+            
             rutasPestanas.put(rutaGuardarComo.getNomSinRuta(), rutaGuardarComo.getRutaExt());
             pestanas.setTitleAt(pestanas.getSelectedIndex(), rutaGuardarComo.getNomSinRuta());
-            
+            rutaGuardarComo.resetRutas();
         }
     }
 
     public void listenersConversores(){
         convert.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                boolean status = conversor.toBinary(areaAux.getText());
-                if(!status)
-                {    //Si hubo algun error lo notifica
-                    JOptionPane.showMessageDialog(
-                        jMenu2,
-                        "Tiene un error en su codigo",
-                        "ERROR.",
-                        JOptionPane.ERROR_MESSAGE);
+                
+                //Cuando no hay pestañas no se ejecuta
+                if(pestanas.getTabCount() != 0){
+                    boolean status = conversor.toBinary(areaAux.getText());
+                    if(!status)
+                    {    //Si hubo algun error lo notifica
+                        JOptionPane.showMessageDialog(
+                            jMenu2,
+                            "Tiene un error en su codigo",
+                            "ERROR.",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                    else
+                    {
+                        //Si no hay ruta no guarda nada
+                        if(rutaGuardarComo.getRutaExt() != ""){
+                            
+                            //Creo una nueva pestaña vacia
+                            generarPestana("Archivo");
+                            guardarComo(conversor.getDataBin());   
+                            
+                            //Si se guardo, se establece la nueva pestaña con los datos
+                            if(rutaGuardarComo.getIndicadorRuta() == true){
+                                areaAux.setText(conversor.getDataBin()); 
+                            }else{//Si no se guarda, elimino la pestaña creada y reestablezco la pestaña seleccionada
+                                pestanas.removeTabAt(pestanas.getSelectedIndex());
+                                setSelectedTab();
+                            }
+                            conversor.dataBin = "";
+                                
+                        }
+
+                    }
                 }
-                else
-                {
-                    guardarComo(conversor.getDataBin());
-                }
+
                 convertActionPerformed(evt);
             }
         });
@@ -657,7 +717,9 @@ public class TextEditor extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuItem nuevo;
@@ -665,6 +727,7 @@ public class TextEditor extends javax.swing.JFrame {
     private javax.swing.JTabbedPane pestanas;
     private javax.swing.JMenuItem reset;
     private javax.swing.JTextField selectField;
+    private javax.swing.JTable tablaDebug;
     // End of variables declaration//GEN-END:variables
 
 }
