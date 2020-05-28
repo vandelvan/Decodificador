@@ -165,24 +165,33 @@ public class Conversor {
                         return false;
                 }
             } else { // Es tipo R
-                if (lin.length > 3 && lin[1] != null && lin[2] != null && lin[3] != null) {
-                    String rd = lin[1];
-                    String rs = lin[2];
-                    String rt = lin[3];
-                    rd = instruccion.memSpace(rd); // Regresa la posicion de memoria en binario
-                    rs = instruccion.memSpace(rs); // Regresa la posicion de memoria en binario
-                    rt = instruccion.memSpace(rt); // Regresa la posicion de memoria en binario
-                    if(rd == "" || rs == "" || rt == "")
-                        return false;
-                    String shamt = "00000";
+                if(function == "000000" && opCode == "000000")  //si es NOP
+                {
                     String comentario = "\t//"+linea;
-                    linea = opCode+rs.substring(0,2)+"\n";  //linea 1
-                    linea += rs.substring(2,5)+rt+"\n"; //linea 2
-                    linea += rd+shamt.substring(0,3)+"\n";  //linea 3
-                    linea += shamt.substring(3,5)+function+comentario+"\n"; //linea 4
-                } else
-                    return false;
-
+                    linea = "00000000"+"\n";  //linea 1
+                    linea += "00000000"+"\n"; //linea 2
+                    linea += "00000000"+"\n";  //linea 3
+                    linea += "00000000"+comentario+"\n"; //linea 4
+                }
+                else{
+                    if (lin.length > 3 && lin[1] != null && lin[2] != null && lin[3] != null) {
+                        String rd = lin[1];
+                        String rs = lin[2];
+                        String rt = lin[3];
+                        rd = instruccion.memSpace(rd); // Regresa la posicion de memoria en binario
+                        rs = instruccion.memSpace(rs); // Regresa la posicion de memoria en binario
+                        rt = instruccion.memSpace(rt); // Regresa la posicion de memoria en binario
+                        if(rd == "" || rs == "" || rt == "")
+                            return false;
+                        String shamt = "00000";
+                        String comentario = "\t//"+linea;
+                        linea = opCode+rs.substring(0,2)+"\n";  //linea 1
+                        linea += rs.substring(2,5)+rt+"\n"; //linea 2
+                        linea += rd+shamt.substring(0,3)+"\n";  //linea 3
+                        linea += shamt.substring(3,5)+function+comentario+"\n"; //linea 4
+                    } else
+                        return false;
+                }
             }
             datos += linea;
         }
