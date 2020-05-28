@@ -400,8 +400,12 @@ public class TextEditor extends javax.swing.JFrame {
     //Metodo para el boton "Guardar"
     private void guardarNormalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarNormalActionPerformed
             //Se le pasa por parametros los datos normales y la ruta para guardarlos en el mismo archivo
-            controlArchivo.crear(areaAux.getText(), rutaSeleccionada);
-            console.print("archivo guardado");      
+        
+            if(pestanas.getTabCount() != 0){
+                controlArchivo.crear(areaAux.getText(), rutaSeleccionada);
+                console.print("archivo guardado"); 
+            }
+                 
     }//GEN-LAST:event_guardarNormalActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
@@ -423,6 +427,8 @@ public class TextEditor extends javax.swing.JFrame {
         datosRutas.clear();
         arbolCarpeta.setModel(null);
         modeloDebug.setRowCount(0);
+        
+       
     }
     
     //Metodo para el boton "Abrir"
@@ -509,10 +515,18 @@ public class TextEditor extends javax.swing.JFrame {
     
     
     private void depurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_depurarActionPerformed
-        // TODO add your handling code here:
         
+
         if(pestanas.getTabCount() != 0){
-            DebugMem debug = new DebugMem(areaAux.getText(), tablaDebug, tablaDatos);
+            System.out.println(pestanas.getTabCount());
+            if(areaAux != null){
+                if(areaAux.getText().length() != 0){
+                    DebugMem debug = new DebugMem(areaAux.getText(), tablaDebug, tablaDatos);
+                }
+            }
+            
+            
+           
         }
         
     }//GEN-LAST:event_depurarActionPerformed
