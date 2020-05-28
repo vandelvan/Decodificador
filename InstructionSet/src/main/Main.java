@@ -8,11 +8,11 @@ import javax.swing.JTabbedPane;
 
 public class Main {
     
-    public static consola console;
+    public static Consola console;
     
     public static void main(String[] args) {
 
-        console = new consola();
+        console = new Consola();
         console.setVisible(true);
         console.setLocationRelativeTo(null);
         console.print("Consola Inicializada");

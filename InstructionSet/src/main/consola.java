@@ -12,12 +12,12 @@ import java.io.PrintStream;
  *
  * @author Daniel
  */
-public class consola extends javax.swing.JFrame {
+public class Consola extends javax.swing.JFrame {
 
     /**
      * Creates new form consola
      */
-    public consola() {
+    public Consola() {
         initComponents();
         consolaText.setText("Preparando Consola");
     }

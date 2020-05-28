@@ -25,7 +25,6 @@ public class Conversor {
             {
                 String opCode = linea.substring(0,6);
                 console.print(linea);
-                console.print("aa "+opCode);
                 //Conseguimos el String de la instruccion dependiendo de su tipo R/I/J
                 if(opCode.equals("000000"))  //Tipo R
                 {
@@ -92,8 +91,6 @@ public class Conversor {
                 datos += linea;
                 }
         }
-
-        console.print("Si samle");
         this.dataAsm = datos;
         console.print(datos);
         return true;
