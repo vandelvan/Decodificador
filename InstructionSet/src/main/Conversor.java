@@ -127,7 +127,7 @@ public class Conversor {
                         //encerrado en try catch para evitar errores de conversion
                         try {
                             //si es mayor al maximo de instrucciones o no es multiplo de 4 (inicio de instrucciones)
-                            if(Integer.parseInt(addr) > 512 || Integer.parseInt(addr) % 4 != 0)
+                            if(Integer.parseInt(addr) > 512)
                                 return false;
                             addr = instruccion.intBin(Integer.parseInt(addr),2);
                         } catch (NumberFormatException e) {
