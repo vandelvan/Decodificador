@@ -17,6 +17,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
 import javax.swing.table.DefaultTableModel;
+import static main.Main.console;
 
 public class TextEditor extends javax.swing.JFrame {
     
@@ -101,8 +102,11 @@ public class TextEditor extends javax.swing.JFrame {
         selectField = new javax.swing.JTextField();
         pestanas = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaDebug = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tablaDatos = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         nuevo = new javax.swing.JMenuItem();
@@ -216,23 +220,39 @@ public class TextEditor extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        tablaDebug.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
         jScrollPane1.setViewportView(tablaDebug);
+
+        jTabbedPane1.addTab("Registros", jScrollPane1);
+
+        tablaDatos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Direccion", "Valor", "Decimal"
+            }
+        ));
+        jScrollPane3.setViewportView(tablaDatos);
+
+        jTabbedPane1.addTab("Memoria de Datos", jScrollPane3);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
+            .addComponent(jTabbedPane1)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -242,14 +262,15 @@ public class TextEditor extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(panelCarpeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pestanas, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
+                        .addComponent(pestanas, javax.swing.GroupLayout.PREFERRED_SIZE, 589, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -380,7 +401,7 @@ public class TextEditor extends javax.swing.JFrame {
     private void guardarNormalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarNormalActionPerformed
             //Se le pasa por parametros los datos normales y la ruta para guardarlos en el mismo archivo
             controlArchivo.crear(areaAux.getText(), rutaSeleccionada);
-            System.out.println("archivo guardado");      
+            console.print("archivo guardado");      
     }//GEN-LAST:event_guardarNormalActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
@@ -449,49 +470,6 @@ public class TextEditor extends javax.swing.JFrame {
         carpetaBtnEstado();
     }//GEN-LAST:event_carpetaBTNActionPerformed
 
-    private void btnAbrirCarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirCarpetaActionPerformed
-        rutaCarpeta=new GenerarRuta();
-        rutaCarpeta.crearRuta(JFileChooser.DIRECTORIES_ONLY, false);
-
-        if(!rutaCarpeta.getRutaArchivo().equals("")){
-            datosRutas.clear();
-            //Metodo que separa la ruta y el nombre del archivo
-            rutaCarpeta.separarNomRuta();
-            //Objeto para la raiz
-            DefaultMutableTreeNode carpetaNodo = new DefaultMutableTreeNode(rutaCarpeta.getNomSinRuta());
-            //Le pongo el nombre de la ruta a la raiz
-            carpetaNodo.setUserObject(rutaCarpeta.getRutaSinNom());
-            //Objeto file para almacenar la carpeta seleccionada y sus propiedades
-            carpeta = new File(rutaCarpeta.getRutaArchivo());
-            //Guardo la lista de los archivos en un arreglo de cadenas
-            archivosCarpeta = carpeta.list();
-
-            //Compruebo que el arreglo no este vacio
-            if(!archivosCarpeta.equals(null)){
-                //Recorro la lista de los archivos
-                for(int i = 0; i < archivosCarpeta.length; i++){
-                    //Creo un objeto file para comprobar si lo de la ruta es un archivo
-                    archivo = new File(rutaCarpeta.getRutaArchivo() + "\\" + archivosCarpeta[i]);
-                        //Compruebo si lo de la ruta es un archivo, y si es txt, mem, asm
-                        if(archivo.isFile() && isTetx(archivo.getName())){
-                            System.out.println(archivosCarpeta[i]);
-                            //Creacion de objeto para insertar en el nodo raiz los archivos en la ruta
-                            DefaultMutableTreeNode archivo = new DefaultMutableTreeNode(archivosCarpeta[i]);
-                            carpetaNodo.add(archivo);
-                            //Agrego los archivos al Hash table
-                            datosRutas.put(archivosCarpeta[i], rutaCarpeta.getRutaArchivo() + "\\" + archivosCarpeta[i]);
-                            }
-
-                        }
-                    }
-
-                    //Modelo para el arbol y establezco la raiz
-                    DefaultTreeModel modelo = new DefaultTreeModel(carpetaNodo);
-                    arbolCarpeta.setModel(modelo);
-
-                }
-    }//GEN-LAST:event_btnAbrirCarpetaActionPerformed
-
     //Abrir pestaña nueva
     private void nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoActionPerformed
             guardarNormal.setEnabled(false);
@@ -501,25 +479,20 @@ public class TextEditor extends javax.swing.JFrame {
     }//GEN-LAST:event_nuevoActionPerformed
 
     
-    private void pestanasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pestanasMouseClicked
-        
-        setSelectedTab();
-    }//GEN-LAST:event_pestanasMouseClicked
-
     
     private void setSelectedTab(){
         if(pestanas.getTabCount() != 0){
-            System.out.println("Pres");
+            console.print("Pres");
             //Obtengo el scroll de la pestaña seleccionada y lo guardo en un objeto
             scrollAux = (JScrollPane)pestanas.getSelectedComponent();
 
 
-            System.out.println(pestanas.getTitleAt(pestanas.getSelectedIndex()));
+            console.print(pestanas.getTitleAt(pestanas.getSelectedIndex()));
             selectField.setText(rutasPestanas.get(pestanas.getTitleAt(pestanas.getSelectedIndex())));
             rutaSeleccionada = rutasPestanas.get(pestanas.getTitleAt(pestanas.getSelectedIndex()));
 
             if(rutaSeleccionada.equals("No Guardado")){
-                System.out.println(rutaSeleccionada);
+                console.print(rutaSeleccionada);
                 guardarNormal.setEnabled(false);
             }else{
                 guardarNormal.setEnabled(true);
@@ -539,13 +512,13 @@ public class TextEditor extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         if(pestanas.getTabCount() != 0){
-            DebugMem debug = new DebugMem(areaAux.getText(), tablaDebug);
+            DebugMem debug = new DebugMem(areaAux.getText(), tablaDebug, tablaDatos);
         }
         
     }//GEN-LAST:event_depurarActionPerformed
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
-        System.out.println("Listener ASM_BIN");
+        console.print("Listener ASM_BIN");
         //Cuando no hay pestañas no se ejecuta
         if(pestanas.getTabCount() != 0){
             boolean status = conversor.toBinary(areaAux.getText());
@@ -579,7 +552,7 @@ public class TextEditor extends javax.swing.JFrame {
     }//GEN-LAST:event_convertActionPerformed
 
     private void convertBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertBackActionPerformed
-        System.out.println("Listener BIN_ASM");
+        console.print("Listener BIN_ASM");
         //Cuando no hay pestañas no se ejecuta
         if(pestanas.getTabCount() != 0){
             boolean status = conversor.toAssembly(areaAux.getText());
@@ -613,6 +586,54 @@ public class TextEditor extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_convertBackActionPerformed
+
+    private void pestanasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pestanasMouseClicked
+
+        setSelectedTab();
+    }//GEN-LAST:event_pestanasMouseClicked
+
+    private void btnAbrirCarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirCarpetaActionPerformed
+        rutaCarpeta=new GenerarRuta();
+        rutaCarpeta.crearRuta(JFileChooser.DIRECTORIES_ONLY, false);
+
+        if(!rutaCarpeta.getRutaArchivo().equals("")){
+            datosRutas.clear();
+            //Metodo que separa la ruta y el nombre del archivo
+            rutaCarpeta.separarNomRuta();
+            //Objeto para la raiz
+            DefaultMutableTreeNode carpetaNodo = new DefaultMutableTreeNode(rutaCarpeta.getNomSinRuta());
+            //Le pongo el nombre de la ruta a la raiz
+            carpetaNodo.setUserObject(rutaCarpeta.getRutaSinNom());
+            //Objeto file para almacenar la carpeta seleccionada y sus propiedades
+            carpeta = new File(rutaCarpeta.getRutaArchivo());
+            //Guardo la lista de los archivos en un arreglo de cadenas
+            archivosCarpeta = carpeta.list();
+
+            //Compruebo que el arreglo no este vacio
+            if(!archivosCarpeta.equals(null)){
+                //Recorro la lista de los archivos
+                for(int i = 0; i < archivosCarpeta.length; i++){
+                    //Creo un objeto file para comprobar si lo de la ruta es un archivo
+                    archivo = new File(rutaCarpeta.getRutaArchivo() + "\\" + archivosCarpeta[i]);
+                        //Compruebo si lo de la ruta es un archivo, y si es txt, mem, asm
+                        if(archivo.isFile() && isTetx(archivo.getName())){
+                            console.print(archivosCarpeta[i]);
+                            //Creacion de objeto para insertar en el nodo raiz los archivos en la ruta
+                            DefaultMutableTreeNode archivo = new DefaultMutableTreeNode(archivosCarpeta[i]);
+                            carpetaNodo.add(archivo);
+                            //Agrego los archivos al Hash table
+                            datosRutas.put(archivosCarpeta[i], rutaCarpeta.getRutaArchivo() + "\\" + archivosCarpeta[i]);
+                            }
+
+                        }
+                    }
+
+                    //Modelo para el arbol y establezco la raiz
+                    DefaultTreeModel modelo = new DefaultTreeModel(carpetaNodo);
+                    arbolCarpeta.setModel(modelo);
+
+                }
+    }//GEN-LAST:event_btnAbrirCarpetaActionPerformed
 
     
     private void generarPestana(String nom){
@@ -748,12 +769,16 @@ public class TextEditor extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuItem nuevo;
     private javax.swing.JPanel panelCarpeta;
     private javax.swing.JTabbedPane pestanas;
     private javax.swing.JMenuItem reset;
     private javax.swing.JTextField selectField;
+    private javax.swing.JTable tablaDatos;
     private javax.swing.JTable tablaDebug;
     // End of variables declaration//GEN-END:variables
 

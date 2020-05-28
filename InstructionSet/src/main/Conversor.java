@@ -1,6 +1,8 @@
 
 package main;
 
+import static main.Main.console;
+
 public class Conversor {
 
     public String dataAsm = "";
@@ -19,12 +21,11 @@ public class Conversor {
         // Obtenemos opCode y Function de cada instruccion
         Instrucciones instruccion = new Instrucciones();
         for (String linea : lineas) {
-            System.out.println(linea);
             if(linea != null)
             {
                 String opCode = linea.substring(0,6);
-                System.out.println(linea);
-                System.out.println("aa "+opCode);
+                console.print(linea);
+                console.print("aa "+opCode);
                 //Conseguimos el String de la instruccion dependiendo de su tipo R/I/J
                 if(opCode.equals("000000"))  //Tipo R
                 {
@@ -92,9 +93,9 @@ public class Conversor {
                 }
         }
 
-        System.out.println("Si samle");
+        console.print("Si samle");
         this.dataAsm = datos;
-        System.out.println(datos);
+        console.print(datos);
         return true;
     }
 
@@ -190,7 +191,7 @@ public class Conversor {
         }
 
         this.dataBin = datos;
-        System.out.println(datos);
+        console.print(datos);
         return true;
 
     }

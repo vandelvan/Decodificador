@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static main.Main.console;
 // import javax.swing.JFileChooser;
 
 public class CrearArchivo {
@@ -18,10 +19,12 @@ public class CrearArchivo {
     private BufferedWriter bw;
     
     public CrearArchivo(){
+        console.print("CrearArchivo inicializado");
 
     }
     
     public void crear(String datos, String ruta){
+        console.print("Creando archivo en " + ruta);
         /*f = new File("./../" + nomArch);*/
         f = new File(ruta);
         
@@ -39,8 +42,8 @@ public class CrearArchivo {
                 pW.close();
                 
             } catch (IOException ex) {
+                console.print("Error al crear archvio: " + ex.getMessage());
                 Logger.getLogger(CrearArchivo.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("holas");
             }
         }else{
             try {

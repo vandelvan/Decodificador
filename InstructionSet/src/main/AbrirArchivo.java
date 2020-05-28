@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static main.Main.console;
 
 public class AbrirArchivo {
     
@@ -13,10 +14,11 @@ public class AbrirArchivo {
     public String datos = "";
     
     public AbrirArchivo(){
-        
+        console.print("AbrirArchivo inicializado");
     }
     
     public void leer(String rutaArch){
+        console.print("Abriendo archivo en " + rutaArch);
         this.rutaArch = rutaArch;
         try {
             //Instacia de Scanner para la lectura del archivo
@@ -35,7 +37,9 @@ public class AbrirArchivo {
             }
             lectura.close();
         } catch (FileNotFoundException ex) {
+            console.print("Error al abrir archivo: " + ex.getMessage());
             Logger.getLogger(AbrirArchivo.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
     }
     
